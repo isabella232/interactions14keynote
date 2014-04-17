@@ -44,6 +44,7 @@ public class ConnectionService {
         HttpClient httpClient = new DefaultHttpClient();
 
         HttpContext localContext = new BasicHttpContext();
+        AppLog.d("","Connecting to " + server);
         HttpPost post = new HttpPost(String.format("%s/icws/connection", server));
         String text = null;
 
@@ -67,12 +68,13 @@ public class ConnectionService {
             String csrfToken = obj.getString("csrfToken");
             String cookie = response.getFirstHeader("set-cookie").getValue();
             String sessionId = obj.getString("sessionId");
+            AppLog.d("","Connected Session: " + sessionId);
 
             IcwsClient client = new IcwsClient(server,sessionId,cookie,csrfToken);
             return client;
 
         } catch (Exception e) {
-            Log.d("","unable to connect to the server " + e);
+            AppLog.d("","unable to connect to the server " + e);
             return null;// e.getLocalizedMessage();
         }
     }

@@ -18,7 +18,11 @@ public class AlertWatchingService implements IMessageReceiver {
         _alertCatalog = alertCatalog;
 
         try {
-            JSONArray categories = new JSONArray(new int[] {2,3,4,5});
+            JSONArray categories = new JSONArray(); //new int[] {2,3,4,5}
+            categories.put(2);
+            categories.put(3);
+            categories.put(4);
+            categories.put(5);
             JSONObject obj = new JSONObject();
             obj.put("alertSetCategories", categories);
 

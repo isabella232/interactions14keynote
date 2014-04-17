@@ -16,6 +16,7 @@ import org.json.JSONObject;
  *
  */
 public class MessagePollService {
+    private final String TAG = "MessagePollService";
 
     private List<IMessageReceiver> _receivers = new ArrayList<IMessageReceiver>();
     private IcwsClient _icwsClient = null;
@@ -38,7 +39,7 @@ public class MessagePollService {
                         JSONObject message = messages.getJSONObject(x);
 
                         String messageType = message.getString("__type");
-
+                        AppLog.d(TAG, "M:" + messageType);
                         if(messageType.equals("")){
                             //delay until later so we can ensure we process any catalog updates first
                             alertNotifications.add(message);

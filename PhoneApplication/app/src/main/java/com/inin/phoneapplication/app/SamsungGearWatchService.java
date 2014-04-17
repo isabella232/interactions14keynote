@@ -16,8 +16,13 @@ import com.samsung.android.sdk.accessory.SA;
 import com.samsung.android.sdk.accessory.SAAgent;
 import com.samsung.android.sdk.accessory.SAPeerAgent;
 import com.samsung.android.sdk.accessory.SASocket;
+import android.app.NotificationManager;
+import 	android.support.v4.app.NotificationCompat;
+import 	android.content.Context;
 
 public class SamsungGearWatchService extends SAAgent implements IWatchService {
+    NotificationManager _notificationManager;
+
     public static final String TAG = "SamsungGearWatchService";
     public static final int SERVICE_CONNECTION_RESULT_OK = 0;
     public static final int ACCESSORY_CHANNEL_ID = 104;
@@ -28,12 +33,33 @@ public class SamsungGearWatchService extends SAAgent implements IWatchService {
             return SamsungGearWatchService.this;
         }
     }
-    public SamsungGearWatchService() {
+    public SamsungGearWatchService(NotificationManager notificationManager) {
         super(TAG, SamsungGearWatchConnection.class);
+
+        _notificationManager = notificationManager;
+
+      /*  NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle("My notification")
+                        .setContentText("Hello World!");
+
+
+        _notificationManager.notify(1, mBuilder.build());
+
+*/
     }
 
     public void alertAdded(AlertAction alert)
     {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle("Alert")
+                        .setContentText(alert.getText());
+
+
+        _notificationManager.notify(1, mBuilder.build());
 
     }
 

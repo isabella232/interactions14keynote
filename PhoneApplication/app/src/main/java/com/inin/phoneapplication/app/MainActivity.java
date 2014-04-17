@@ -1,7 +1,9 @@
 package com.inin.phoneapplication.app;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preview.support.v4.app.NotificationManagerCompat;
@@ -23,7 +25,7 @@ public class MainActivity extends Activity {
     private final String LOG_TAG = "Main Activity";
     private IcwsClient _icwsClient = null;
     private MessagePollService _messagePollService;
-    private IWatchService _watch = new SamsungGearWatchService();
+    private IWatchService _watch = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,36 +33,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        _watch = new SamsungGearWatchService((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
+
         AppLog.init((EditText)findViewById(R.id.logText));
         AppLog.d(LOG_TAG,"OnCreate");
         ConnectTask task = new ConnectTask();
         task.execute(new String[] { "" });
 
         initBluetooth();
-/*
-        int notificationId = 001;
-// Build intent for notification content
-        Intent viewIntent = new Intent(this, MainActivity.class);
-        //viewIntent.putExtra(EXTRA_EVENT_ID, eventId);
-        PendingIntent viewPendingIntent =
-                PendingIntent.getActivity(this, 0, viewIntent, 0);
-
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("Alert")
-                        .setContentText("Alert Text")
-                        .setContentIntent(viewPendingIntent);
-        //.addAction(R.drawable.ic_launcher,
-        //       "Listen", viewPendingIntent);
-
-// Get an instance of the NotificationManager service
-        NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(this);
-
-// Build the notification and issues it with notification manager.
-        notificationManager.notify(notificationId, notificationBuilder.build());
-*/
     }
 
     private class ConnectTask extends AsyncTask<String, Void, String> {

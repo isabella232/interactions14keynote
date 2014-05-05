@@ -64,7 +64,7 @@ public class AlertCatalog implements IMessageReceiver {
                                 }
                                 */
                                 JSONObject values = action.getJSONObject("namedValues");
-                                AppLog.d("", alertRuleId + " : " + statId);
+                               // AppLog.d("", alertRuleId + " : " + statId);
                                 AlertAction newAlertAction = new AlertAction(alertRuleId, statId, "","");
                                 _catalog.put(alertRuleId, newAlertAction);
 

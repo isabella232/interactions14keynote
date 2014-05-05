@@ -39,6 +39,10 @@ public class MessagePollService {
                         try {
                             JSONObject message = messages.getJSONObject(x);
 
+                            if(message.has("interactionsChanged")){
+
+                            }
+
                             String messageType = message.getString("__type");
                             AppLog.d(TAG, "M:" + messageType);
                             if (messageType.equals("")) {

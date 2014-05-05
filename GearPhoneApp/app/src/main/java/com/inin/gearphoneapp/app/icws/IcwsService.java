@@ -10,33 +10,43 @@ import android.os.IBinder;
  */
 public class IcwsService extends Service {
     private IcwsClient _icwsClient;
-    private MessagePollService _messagePollService;
+    private MessagePollService _messagePollService = null;
 
     private class ConnectTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
-            ConnectionService c = new ConnectionService();
+            try {
+                ConnectionService c = new ConnectionService();
 
-            String userName = "devlab_user";
-            String password = "1234";
+                String userName = "devlab_user";
+                String password = "1234";
 
-            _icwsClient = c.connect(userName, password, "http://172.19.34.165:8018");
+                //_icwsClient = c.connect(userName, password, "http://172.19.34.165:8018");
+                _icwsClient = c.connect(userName, password, "http://172.19.34.165:8888");
 
-            _messagePollService = new MessagePollService(_icwsClient);
+                if (_messagePollService != null) {
+                    _messagePollService.stopTimer();
+                }
 
-            IMessageReceiver alertCatalog = new AlertCatalog();
-            _messagePollService.RegisterReceiver(alertCatalog);
+                _messagePollService = new MessagePollService(_icwsClient);
 
-            QueueWatcher workgroupQueueReceiver = new QueueWatcher("marketing", "2", false, _icwsClient);
-            _messagePollService.RegisterReceiver(workgroupQueueReceiver);
+                Thread.sleep(500);
+
+                IMessageReceiver alertCatalog = new AlertCatalog();
+                _messagePollService.RegisterReceiver(alertCatalog);
+
+                QueueWatcher workgroupQueueReceiver = new QueueWatcher("marketing", "2", false, _icwsClient);
+                _messagePollService.RegisterReceiver(workgroupQueueReceiver);
 
 
-            QueueWatcher userQueueReceiver = new QueueWatcher(userName, "1", true, _icwsClient);
-            _messagePollService.RegisterReceiver(userQueueReceiver);
+                QueueWatcher userQueueReceiver = new QueueWatcher(userName, "1", true, _icwsClient);
+                _messagePollService.RegisterReceiver(userQueueReceiver);
 
-            IMessageReceiver alertReceiver = new AlertWatchingService((AlertCatalog)alertCatalog, workgroupQueueReceiver, _icwsClient);
-            _messagePollService.RegisterReceiver(alertReceiver);
+                IMessageReceiver alertReceiver = new AlertWatchingService((AlertCatalog) alertCatalog, workgroupQueueReceiver, _icwsClient);
+                _messagePollService.RegisterReceiver(alertReceiver);
 
+
+            }catch(Exception ex){}
 
             return "";
         }

@@ -42,7 +42,7 @@ public class QueueWatcher implements IMessageReceiver {
             attributeNames.put("Eic_KwsCustomerNegativeScore");
             attributeNames.put("Eic_KwsCustomerNumSpotted");
             attributeNames.put("Eic_KwsCustomerPositiveScore");
-            attributeNames.put("Eic_ListeningFrom");
+            attributeNames.put("Eic_CallStateString");
             attributeNames.put("Eic_RemoteID");
             attributeNames.put("Eic_RemoteName");
             attributeNames.put("Eic_UserName");
@@ -55,6 +55,8 @@ public class QueueWatcher implements IMessageReceiver {
         catch(Exception ex){}
     }
 
+    JSONObject _currentCall = null;
+
     public void MessageReceived(JSONObject data){
         try {
 
@@ -62,46 +64,63 @@ public class QueueWatcher implements IMessageReceiver {
                 return;
             }
 
-            JSONArray added = data.getJSONArray("interactionsAdded");
+            if(data.has("interactionsAdded")) {
+                JSONArray added = data.getJSONArray("interactionsAdded");
 
-            for (int x = 0; x < added.length(); x++) {
-                JSONObject call = added.getJSONObject(x);
+                for (int x = 0; x < added.length(); x++) {
+                    JSONObject call = added.getJSONObject(x);
 
-                String interactionId = call.getString("interactionId");
+                    String interactionId = call.getString("interactionId");
 
-                _interactions.put(interactionId, call);
-                AppLog.d(TAG, "call Added: " + call.getString("interactionId"));
+                    _interactions.put(interactionId, call);
+                    AppLog.d(TAG, "call Added: " + call.getString("interactionId"));
 
-                if(_shouldNotifyWatch){
-                    GearAccessoryProviderService.instance.newCall(getRemoteName(interactionId), getRemoteNumber(interactionId), getIsListening(interactionId), interactionId);
+                    if (_shouldNotifyWatch) {
+
+                        GearAccessoryProviderService.instance.newCall(getRemoteName(interactionId), getRemoteNumber(interactionId), getIsListening(interactionId), interactionId);
+                    }
                 }
             }
 
-            JSONArray changed = data.getJSONArray("interactionsChanged");
+            if(data.has("interactionsChanged")) {
 
-            for (int x = 0; x < changed.length(); x++) {
-                JSONObject call = changed.getJSONObject(x);
+                JSONArray changed = data.getJSONArray("interactionsChanged");
 
-                String interactionId = call.getString("interactionId");
+                for (int x = 0; x < changed.length(); x++) {
+                    JSONObject call = changed.getJSONObject(x);
 
-                AppLog.d(TAG, "call changed: " + interactionId);
-                _interactions.put(interactionId, call);
+                    String interactionId = call.getString("interactionId");
 
-                if(_shouldNotifyWatch && isDisconnected(interactionId)){
-                    GearAccessoryProviderService.instance.clearAlerts();
-                }
 
-                else if(_shouldNotifyWatch) {
-                    GearAccessoryProviderService.instance.newCall(getRemoteName(interactionId), getRemoteNumber(interactionId), getIsListening(interactionId), interactionId);
+                    JSONObject cachedInteraction = _interactions.get(interactionId);
+
+                    java.util.Iterator<?> keys = call.getJSONObject("attributes").keys();
+
+                    while (keys.hasNext()) {
+                        String key = (String) keys.next();
+                        cachedInteraction.getJSONObject("attributes").put(key, call.getJSONObject("attributes").getString(key));
+                    }
+
+                    AppLog.d(TAG, "call changed: " + interactionId);
+                    _interactions.put(interactionId, cachedInteraction);
+
+                    if (_shouldNotifyWatch && isDisconnected(interactionId)) {
+                        GearAccessoryProviderService.instance.clearAlerts();
+                    } else if (_shouldNotifyWatch ) {
+                        GearAccessoryProviderService.instance.newCall(getRemoteName(interactionId), getRemoteNumber(interactionId), getIsListening(interactionId), interactionId);
+                    }
                 }
             }
 
-            JSONArray removed = data.getJSONArray("interactionsAdded");
+            if(data.has("interactionsRemoved")) {
 
-            for (int x = 0; x < removed.length(); x++) {
-                String call = removed.getString(x);
-                AppLog.d(TAG, "call removed: " + call);
-                _interactions.remove(call);
+                JSONArray removed = data.getJSONArray("interactionsRemoved");
+
+                for (int x = 0; x < removed.length(); x++) {
+                    String call = removed.getString(x);
+                    AppLog.d(TAG, "call removed: " + call);
+                    _interactions.remove(call);
+                }
             }
         }
         catch(Exception ex){}
@@ -156,7 +175,7 @@ public class QueueWatcher implements IMessageReceiver {
 
     public String getRemoteNumber(String interactionId){
         try {
-            return _interactions.get(interactionId).getJSONObject("attributes").getString("Eic_RemoteID");
+            return _interactions.get(interactionId).getJSONObject("attributes").getString("Eic_RemoteId");
         }
         catch(Exception ex){}
         return "";
@@ -164,7 +183,7 @@ public class QueueWatcher implements IMessageReceiver {
 
     public boolean getIsListening(String interactionId){
         try{
-            return _interactions.get(interactionId).getJSONObject("attributes").getString("Eic_ListeningFrom").length() > 0;
+            return _interactions.get(interactionId).getJSONObject("attributes").getString("Eic_CallStateString").contains("Monitoring");
         }
         catch(Exception ex){}
         return false;

@@ -79,15 +79,22 @@ public class GearAccessoryProviderService extends SAAgent {
                         listenData.put("on","true");
                         listenData.put("supervisor", "true");
 
-
                         IcwsClient.instance.post("/interactions/" + data.getString("interactionId") + "/listen", listenData);
 
 
                     }catch(org.json.JSONException jex){}
 
                 }
+                else  if (data.getString("messageType").equalsIgnoreCase("join")) {
+                    AppLog.d(TAG, "Listen to " + data.getString("interactionId"));
 
-                if (data.getString("messageType").equalsIgnoreCase("stoplisten")) {
+                    try
+                    {
+                        JSONObject listenData = new JSONObject();
+                        IcwsClient.instance.post("/interactions/" + data.getString("interactionId") + "/join", listenData);
+                    }catch(org.json.JSONException jex){}
+                }
+                else if (data.getString("messageType").equalsIgnoreCase("stoplisten")) {
                     AppLog.d(TAG, "Listen to " + data.getString("interactionId"));
 
                     try

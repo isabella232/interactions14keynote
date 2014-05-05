@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Gear Supervisor</title>
+
+    <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/gearmethods.js"></script>
+      
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class=contents>
+  	<!--<div style='margin:auto;'>
+  	
+  		<span class=content_text id=textbox>Basic</span>
+  	</div> -->
+  	<div id='idle'>
+  		<div class='centerImage'>
+  			<img height='100' width='100' src='img/inin.png' />
+  		
+  		</div>
+  		
+  		<div class='center'>
+  			<label id='status'>
+  		Waiting...
+  		</label>
+  		
+  		</div>
+  		<button class='largeButton' id='btnReset'>Reset</button>
+  	</div>
+  	
+  	<div id='alert'>
+  		<h1 id='alertTitle'>Call In Alert</h1>
+  		<h2 id='alertSubtitle'>Joe Schmoe</h2>
+  		<h2 id='alertAgent'>Agent: Kevin</h2>
+  		<table>
+  			<tr>
+  				<td><button id='btnDismiss' class='alertButton'>Dismiss</button></td>
+  			
+  				<td><button id='btnListen' class='alertButton'>Listen</button></td>
+  			</tr>
+  		</table>
+  	</div>
+  	<div id='call' >
+  		<h2 id='callRemoteName'>Joe Schmoe</h2>
+  		<h2 id='callRemoteNumber'>Agent: Kevin</h2>
+  		<h2 id='callTimer' class='timer' data-starttime='1398874598032'></h2>
+  		<button id='btnDisconnect' class='alertButton'>Disconnect</button>
+  		<button id='btnJoin' class='alertButton'>Join</button>
+  		<button id='btnStopListening' class='alertButton'>Stop</button>
+  		
+  	</div>
+  </div>
+</body>
+</html>

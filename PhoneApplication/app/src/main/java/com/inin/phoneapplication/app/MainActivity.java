@@ -1,14 +1,7 @@
 package com.inin.phoneapplication.app;
 
 import android.app.Activity;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.preview.support.v4.app.NotificationManagerCompat;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.os.Handler;
@@ -26,21 +19,24 @@ public class MainActivity extends Activity {
     private IcwsClient _icwsClient = null;
     private MessagePollService _messagePollService;
     private IWatchService _watch = null;
-
+   // private SamsungGearWatchService2 agent = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        _watch = new SamsungGearWatchService((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
+       // _watch = new SamsungGearWatchService((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE), this);
+_watch = null;
+
+ //       agent = new SamsungGearWatchService2();
 
         AppLog.init((EditText)findViewById(R.id.logText));
         AppLog.d(LOG_TAG,"OnCreate");
         ConnectTask task = new ConnectTask();
         task.execute(new String[] { "" });
 
-        initBluetooth();
+//        initBluetooth();
     }
 
     private class ConnectTask extends AsyncTask<String, Void, String> {

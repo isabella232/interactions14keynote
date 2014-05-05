@@ -3,7 +3,9 @@
     package="com.inin.phoneapplication.app" >
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="com.samsung.accessory.permission.ACCESSORY_FRAMEWORK"/>
-    <meta-data android:name="AccessoryServicesLocation" android:value="/res/samsunggearprofile.xml"/>
+    <uses-permission android:name="com.samsung.wmanager.APP" />
+
+    <uses-permission android:name="com.samsung.wmanager.ENABLE_NOTIFICATION" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -16,8 +18,29 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.DEFAULT"/>
             </intent-filter>
         </activity>
+<!--
+        <service android:name="com.inin.phoneapplication.app.HelloAccessoryProviderService" >
+
+        </service>
+-->
+        <!--
+        <receiver android:name="com.samsung.android.sdk.accessory.ServiceConnectionIndicationBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.accessory.service.action.ACCESSORY_SERVICE_CONNECTION_IND" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver" >
+            <intent-filter>
+                <action android:name="android.accessory.device.action.REGISTER_AFTER_INSTALL" />
+            </intent-filter>
+        </receiver>
+          <meta-data android:name="AccessoryServicesLocation" android:value="/res/xml/accessoryservices.xml"/>
+
+-->
+
 
     </application>
 

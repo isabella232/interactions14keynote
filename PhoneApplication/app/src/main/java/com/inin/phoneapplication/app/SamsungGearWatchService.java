@@ -24,18 +24,12 @@ public class SamsungGearWatchService extends SAAgent implements IWatchService {
     NotificationManager _notificationManager;
 
     public static final String TAG = "SamsungGearWatchService";
-    public static final int SERVICE_CONNECTION_RESULT_OK = 0;
-    public static final int ACCESSORY_CHANNEL_ID = 104;
-    HashMap<Integer, SamsungGearWatchConnection> mConnectionsMap = null;
-    private final IBinder mBinder = new LocalBinder();
-    public class LocalBinder extends Binder {
-        public SamsungGearWatchService getService() {
-            return SamsungGearWatchService.this;
-        }
-    }
-    public SamsungGearWatchService(NotificationManager notificationManager) {
+    Context mCurrentContext;
+
+    public SamsungGearWatchService(NotificationManager notificationManager, Context currentContext) {
         super(TAG, SamsungGearWatchConnection.class);
 
+        mCurrentContext = currentContext;
         _notificationManager = notificationManager;
 
       /*  NotificationCompat.Builder mBuilder =
@@ -48,6 +42,7 @@ public class SamsungGearWatchService extends SAAgent implements IWatchService {
         _notificationManager.notify(1, mBuilder.build());
 
 */
+        onCreate();
     }
 
     public void alertAdded(AlertAction alert)
@@ -72,6 +67,17 @@ public class SamsungGearWatchService extends SAAgent implements IWatchService {
     }
 
 
+    public static final int SERVICE_CONNECTION_RESULT_OK = 0;
+    public static final int ACCESSORY_CHANNEL_ID = 105;
+    HashMap<Integer, SamsungGearWatchConnection> mConnectionsMap = null;
+
+    private final IBinder mBinder = new LocalBinder();
+    public class LocalBinder extends Binder{
+        public SamsungGearWatchService getService(){
+            return SamsungGearWatchService.this;
+        }
+    }
+
     public class SamsungGearWatchConnection extends SASocket {
         private int mConnectionId;
         public SamsungGearWatchConnection() {
@@ -86,35 +92,37 @@ public class SamsungGearWatchService extends SAAgent implements IWatchService {
         public void onReceive(int channelId, byte[] data) {
             AppLog.d(TAG, "onReceive");
             Time time = new Time();
-        time.set(System.currentTimeMillis());
-        String timeStr = " " + String.valueOf(time.minute) + ":"
-                + String.valueOf(time.second);
-        String strToUpdateUI = new String(data);
-        String message = strToUpdateUI.concat(timeStr);
-            SamsungGearWatchConnection uHandler = mConnectionsMap.get(Integer
-                .parseInt(String.valueOf(mConnectionId)));
-        try {
-            uHandler.send(ACCESSORY_CHANNEL_ID, message.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
+            time.set(System.currentTimeMillis());
+            String timeStr = " " + String.valueOf(time.minute) + ":"
+                    + String.valueOf(time.second);
+            String strToUpdateUI = new String(data);
+            String message = strToUpdateUI.concat(timeStr);
+                SamsungGearWatchConnection uHandler = mConnectionsMap.get(Integer
+                    .parseInt(String.valueOf(mConnectionId)));
+            try {
+                uHandler.send(ACCESSORY_CHANNEL_ID, message.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        @Override
+        protected void onServiceConnectionLost(int errorCode) {
+            AppLog.e(TAG, "onServiceConectionLost for peer = " + mConnectionId
+                    + "error code =" + errorCode);
+            if (mConnectionsMap != null) {
+                mConnectionsMap.remove(mConnectionId);
+            }
         }
     }
-    @Override
-    protected void onServiceConnectionLost(int errorCode) {
-        AppLog.e(TAG, "onServiceConectionLost for peer = " + mConnectionId
-                + "error code =" + errorCode);
-        if (mConnectionsMap != null) {
-            mConnectionsMap.remove(mConnectionId);
-        }
-    }
-}
+
     @Override
     public void onCreate() {
-        super.onCreate();
+ //       super.onCreate();
         Log.i(TAG, "onCreate of smart view Provider Service");
         SA mAccessory = new SA();
         try {
-            mAccessory.initialize(this);
+         //   mAccessory.initialize(this);
+            mAccessory.initialize(mCurrentContext);
             boolean isFeatureEnabled = mAccessory.isFeatureEnabled(SA.DEVICE_ACCESSORY);
         } catch (SsdkUnsupportedException e) {
 // Error Handling

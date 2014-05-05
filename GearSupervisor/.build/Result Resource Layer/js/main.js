@@ -22,7 +22,17 @@ $(window).load(function(){
 		
 		var data = {
 				'messageType' : 'listen',
-				'interactionId' : $('#call').data('interactionId')
+				'interactionId' :  $('#currentInteractionId').text()
+		}
+		
+		SASocket.sendData(CHANNELID, JSON.stringify(data) );
+	});
+	
+	$( "#btnJoin" ).click(function() {
+		
+		var data = {
+				'messageType' : 'join',
+				'interactionId' :  $('#currentInteractionId').text()
 		}
 		
 		SASocket.sendData(CHANNELID, JSON.stringify(data) );
@@ -32,7 +42,7 @@ $(window).load(function(){
 		
 		var data = {
 				'messageType' : 'disconnect',
-				'interactionId' : $('#call').data('interactionId')
+				'interactionId' : $('#currentInteractionId').text()
 		}
 		
 		$('#call').hide();
@@ -46,7 +56,7 @@ $(window).load(function(){
 		
 		var data = {
 				'messageType' : 'stoplisten',
-				'interactionId' : $('#call').data('interactionId')
+				'interactionId' :  $('#currentInteractionId').text()
 		}
 		
 		$('#call').hide();
@@ -61,6 +71,18 @@ $(window).load(function(){
 	$('#call').hide();
 	$('#alert').hide();
 	$('#idle').show();
+	
+	
+	setInterval( function() {
+		var seconds = new Date().getSeconds();
+		var minutes = new Date().getMinutes();
+		var hours = new Date().getHours();
+		$('#clock').text(( hours < 10 ? "0" : "" ) + (hours % 12) + ':' + ( minutes < 10 ? "0" : "" ) + minutes + ':' + ( seconds < 10 ? "0" : "" ) + seconds + ' ' + ( hours < 12 ? "AM" : "PM" ));
+		
+    }, 1000);	
+	
+	setError('NOT CONNECTED');
+	
 });
 
 
@@ -96,7 +118,10 @@ $(window).load(function(){
 function onreceive(channelId, data) {
 	var message = JSON.parse(data);
 	
-	if(message.messageType == 'newAlert'){
+	console.log(message);
+	
+	if(message.messageType == 'newAlert' && message.subTitle != ''){
+		
 		$('#alert').show();
 		$('#idle').hide();
 		$('#call').hide();
@@ -104,7 +129,10 @@ function onreceive(channelId, data) {
 		$('#alertSubtitle').html(message.subTitle);
 		$('#alertAgent').html(message.subTitle2);
 		currentInteractionId = message.interactionId;
-		$('#call').data('interactionId', message.interactionId);
+
+		
+		$('#currentInteractionId').text(message.interactionId);
+		
 		
 	}
 	else if((message.messageType == 'clearAlert') || 
@@ -131,7 +159,7 @@ function onreceive(channelId, data) {
 			$('#btnDisconnect').show();
 		}
 		
-		$('#call').data('interactionId', message.interactionId);
+		$('#currentInteractionId').text(message.interactionId);
 		
 		currentInteractionId = message.interactionId;
 				
@@ -143,7 +171,7 @@ function onreceive(channelId, data) {
  
  function setStatus(message){
 	 $('#status').html(message);
-	 $('#status').css('color', 'black');
+	 $('#status').css('color', 'green');
  }
  
  function setError(message){

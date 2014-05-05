@@ -22,10 +22,15 @@
   		
   		</div>
   		
+  		
+  		<div >
+  			<h1 id='clock'></h1>
+  		</div>
   		<div class='center'>
   			<label id='status'>
   		Waiting...
   		</label>
+  		
   		
   		</div>
   		<button class='largeButton' id='btnReset'>Reset</button>
@@ -47,11 +52,19 @@
   		<h2 id='callRemoteName'>Joe Schmoe</h2>
   		<h2 id='callRemoteNumber'>Agent: Kevin</h2>
   		<h2 id='callTimer' class='timer' data-starttime='1398874598032'></h2>
-  		<button id='btnDisconnect' class='alertButton'>Disconnect</button>
-  		<button id='btnJoin' class='alertButton'>Join</button>
-  		<button id='btnStopListening' class='alertButton'>Stop</button>
   		
+  		
+  		<table>
+  			<tr>
+  				<td><button id='btnDisconnect' class='alertButton'>Disconnect</button></td>
+  				<td><button id='btnJoin' class='alertButton'>Join</button></td>
+  				
+  				<td><button id='btnStopListening' class='alertButton'>Stop</button>
+  		</td>
+  			</tr>
+  		</table>
   	</div>
   </div>
+  <div id='currentInteractionId' style='display:none'/>
 </body>
 </html>

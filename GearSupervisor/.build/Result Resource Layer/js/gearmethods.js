@@ -80,7 +80,7 @@ var SAAgent = null;
 			if (SASocket != null) {
 				SASocket.close();
 				SASocket = null;
-				setStatus("closeConnection");
+				setError("Connection Closed");
 				
 				$('#call').hide();
 				$('#alert').hide();

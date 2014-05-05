@@ -80,3 +80,8 @@ table {
 button{
 	border-radius: 15px;
 }
+
+#clock{
+	margin: 0 15px;
+	color:black;
+}

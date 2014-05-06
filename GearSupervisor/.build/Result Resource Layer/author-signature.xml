@@ -8,11 +8,15 @@
 </Reference>
 <Reference URI="css/style.css">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
-<DigestValue>YMVtWYiuWGyBvQX6/LZE7ZgL6xKS/VYugZRONp0h8Bg=</DigestValue>
+<DigestValue>UAfer4o+ujwt8BgMv8/uav6fU4DYYpNjozhOHiOjgbM=</DigestValue>
 </Reference>
 <Reference URI="icon.png">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
 <DigestValue>vPjxjOppORd6hn9Bw4sh06gqtDoJzoFbV/8e9FyIdvk=</DigestValue>
+</Reference>
+<Reference URI="img/banner.png">
+<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
+<DigestValue>LSVoXf3W0YQ4Dddkhhv6NknRaiEMVetcQ+PhTQWQhCg=</DigestValue>
 </Reference>
 <Reference URI="img/inin.png">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
@@ -20,7 +24,7 @@
 </Reference>
 <Reference URI="index.html">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
-<DigestValue>1EP3rjAwvdjog1khYigm2wW7SPyLoL9vzoIEiKYgFmw=</DigestValue>
+<DigestValue>fgtHGHOs8tthtZkgcKEBwgA8OxJQCKZkx6j/EnJLWfU=</DigestValue>
 </Reference>
 <Reference URI="inin.png">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
@@ -36,7 +40,7 @@
 </Reference>
 <Reference URI="js/main.js">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
-<DigestValue>O6moD2EOTFRrmgilEyNZDISAnnWmWq4FfLHCtirW9+Y=</DigestValue>
+<DigestValue>D3JLvHHgeAccqcon/WSrZn1rugnBDXhTkqGpwIjw5vM=</DigestValue>
 </Reference>
 <Reference URI="res/xml/accessoryservices.xml">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
@@ -51,11 +55,11 @@
 </Reference>
 </SignedInfo>
 <SignatureValue>
-LVhM4fmLnciSJWHAXfpxAu7pxBvqiySUovTuRvTya83ZREFudgwe0hAPEZCFZisG3tCVdgEpC0Sm
-s8IbGq+/Xply1egOkDnE3AFFR0mzD7tCPud++/5nyApFCIO0m6jEUCGKfQDc8Q95yjHt5iUuARdx
-7dEEkMmP/M9SMzDIrWOwmmppSYQHkhjUgZafBq2DTYYR6lw690HoasUN45l9b3z8LnLDGjVO5Aed
-7fWsCNfICEPD5Ur+xckXwfPyNSpQAS/++aO3nHi3ikUlqi1urEZ9ly8EKrQOgWvkP+j0kDkpjrif
-a+62/u68VqX5yKrz7zTEqxgmsyvdn+IXtNk6Ew==
+BTk0xMKppNQqQTE8yWTBIMtvisboN/bRbCXvkR2KKD7864MXcFZGJ9C5DO/KuvtJ8ZrT1qlEXcpH
+213Ar7s4eUPgkeKHUJ0PLp/hwD4sfH5IacoAP2wKggS3TCn1J5nFSVCC3jAEEchsnvTYDgVHF1wA
+HsWRiN6jBwzAXwWoG/HGU6HR3Ab3MszyKBm7cTJtZg8xCubsfhCAJVg8c00Y88k3hRyfelJN2Z8J
+Wgx/PC/AFWbQu4rOZBO/1uh4F01cFZtCQKgV3fB3pFBXU+Z6WkOlyjHoyseouRgudCjGlcraM7nb
+VMM1YspN8cYOcE0wTIhioneQKBemG5tPdPgpMw==
 </SignatureValue>
 <KeyInfo>
 <X509Data>

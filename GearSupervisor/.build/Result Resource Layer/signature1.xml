@@ -4,7 +4,7 @@
 <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"></SignatureMethod>
 <Reference URI="author-signature.xml">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
-<DigestValue>QZhxkW7upUhaIFZu5XoMK2S1upAthDfiiIQT52966a4=</DigestValue>
+<DigestValue>uah1a22thMUGEsP+9OfgcInZSGd0LJV/HaQckIwmhr8=</DigestValue>
 </Reference>
 <Reference URI="config.xml">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
@@ -12,11 +12,15 @@
 </Reference>
 <Reference URI="css/style.css">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
-<DigestValue>YMVtWYiuWGyBvQX6/LZE7ZgL6xKS/VYugZRONp0h8Bg=</DigestValue>
+<DigestValue>UAfer4o+ujwt8BgMv8/uav6fU4DYYpNjozhOHiOjgbM=</DigestValue>
 </Reference>
 <Reference URI="icon.png">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
 <DigestValue>vPjxjOppORd6hn9Bw4sh06gqtDoJzoFbV/8e9FyIdvk=</DigestValue>
+</Reference>
+<Reference URI="img/banner.png">
+<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
+<DigestValue>LSVoXf3W0YQ4Dddkhhv6NknRaiEMVetcQ+PhTQWQhCg=</DigestValue>
 </Reference>
 <Reference URI="img/inin.png">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
@@ -24,7 +28,7 @@
 </Reference>
 <Reference URI="index.html">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
-<DigestValue>1EP3rjAwvdjog1khYigm2wW7SPyLoL9vzoIEiKYgFmw=</DigestValue>
+<DigestValue>fgtHGHOs8tthtZkgcKEBwgA8OxJQCKZkx6j/EnJLWfU=</DigestValue>
 </Reference>
 <Reference URI="inin.png">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
@@ -40,7 +44,7 @@
 </Reference>
 <Reference URI="js/main.js">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
-<DigestValue>O6moD2EOTFRrmgilEyNZDISAnnWmWq4FfLHCtirW9+Y=</DigestValue>
+<DigestValue>D3JLvHHgeAccqcon/WSrZn1rugnBDXhTkqGpwIjw5vM=</DigestValue>
 </Reference>
 <Reference URI="res/xml/accessoryservices.xml">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
@@ -55,11 +59,11 @@
 </Reference>
 </SignedInfo>
 <SignatureValue>
-cWLhHMovrpTiqYT7mgXcnYiX5YeSKpRH2+H+kLocctYGxQFQVoCzu0rTwEiSCaLMgK+md0f3tN0Z
-gBCrZfnbowaWycHEZMbu0PxFLV4McZ3L0el1vdnc/FDSenaISadYWltlPvI0hcKCzp3EgD2T08ag
-TR2Z423iaaS6E8gVfc/Ny0GFMmKaUcAbvq31ajG6WdGqT+Sx8BQc6NqI4C9oxLrnyrZTaUdWQ1gg
-1Ie1DuYmpt7D7nrXUe3n5PDwq8WtsLUGI95A6zn0rebFNDw8O3I7/uwcm3fqT49ThzDrj/4VCxEs
-i3PjadT9WS2tIumL6GEwVeCUHDT5NrO1UmKq8A==
+B4bToyr0D2N1I7vQ5VnRdyPjMdlhZnooAJ6v/0XETbFJhjy+5wYZ7tBmAyUQjRyqBFuv6J039g/L
+vxb6MR/TctP7aUt7BfapdlUsHYkInhl8WSlFJX8yTFFx6gtcbC5Ts5kFXQvsLx1V4I2N+PUNhLFO
+/teFcTz/uGGIdHilDCMONvehXTgwAlfPqrMqNT7zLFk6SVtDnFcTf/jC/m5Wew5CzZMaZacInvoX
+HOTMDFOqny7fKMaYqnqoru4++//hCep6768/qy3UMm3gpfOzCyj9Q1lrgnWg6WxLtKmVASkqCTl7
+IbVT5MkYbU+LiA4exLgyOziiuu8Fb1ScvSI/NQ==
 </SignatureValue>
 <KeyInfo>
 <X509Data>

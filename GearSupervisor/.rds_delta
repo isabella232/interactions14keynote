@@ -1,7 +1,9 @@
 #delete
 #add
+res/wgt/img/banner.png
 #modify
 res/wgt/author-signature.xml
-res/wgt/img/inin.png
-res/wgt/js/gearmethods.js
+res/wgt/css/style.css
+res/wgt/index.html
+res/wgt/js/main.js
 res/wgt/signature1.xml

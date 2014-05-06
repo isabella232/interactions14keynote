@@ -17,14 +17,17 @@
   		<span class=content_text id=textbox>Basic</span>
   	</div> -->
   	<div id='idle'>
-  		<div class='centerImage'>
-  			<img height='100' width='100' src='img/inin.png' />
-  		
+  		<!-- <div class='centerImage'>
+  			
   		</div>
+  		 -->
   		
+  		<img id='logoImage' src='img/banner.png' />
   		
-  		<div >
+  		<div class="clock">
   			<h1 id='clock'></h1>
+  			<h3 id='ampm'>AM</h3>
+  			<h3 id='date'></h3>
   		</div>
   		<div class='center'>
   			<label id='status'>
@@ -33,14 +36,13 @@
   		
   		
   		</div>
-  		<button class='largeButton' id='btnReset'>Reset</button>
   	</div>
   	
   	<div id='alert'>
   		<h1 id='alertTitle'>Call In Alert</h1>
   		<h2 id='alertSubtitle'>Joe Schmoe</h2>
   		<h2 id='alertAgent'>Agent: Kevin</h2>
-  		<table>
+  		<table class='buttonTable'>
   			<tr>
   				<td><button id='btnDismiss' class='alertButton'>Dismiss</button></td>
   			
@@ -49,12 +51,12 @@
   		</table>
   	</div>
   	<div id='call' >
-  		<h2 id='callRemoteName'>Joe Schmoe</h2>
-  		<h2 id='callRemoteNumber'>Agent: Kevin</h2>
-  		<h2 id='callTimer' class='timer' data-starttime='1398874598032'></h2>
+  		<h1 id='callRemoteName'>Joe Schmoe</h1>
+  		<h1 id='callRemoteNumber'>Agent: Kevin</h1>
+  		<h1 id='callTimer' class='timer' data-starttime='1398874598032'></h1>
   		
   		
-  		<table>
+  		<table class='buttonTable'>
   			<tr>
   				<td><button id='btnDisconnect' class='alertButton'>Disconnect</button></td>
   				<td><button id='btnJoin' class='alertButton'>Join</button></td>

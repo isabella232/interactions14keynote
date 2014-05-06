@@ -212,8 +212,12 @@ public class SipModel {
 
     public void callAnswer(){
         try {
+            if (_audioCall.isInCall()) return;
+
             _audioCall.answerCall(30);
             _audioCall.startAudio();
+
+            //TODO: Setting for default speakerphone and mute value
             _audioCall.setSpeakerMode(true);
             if(_audioCall.isMuted()) {
                 _audioCall.toggleMute();
@@ -238,7 +242,7 @@ public class SipModel {
             Log.d(HelperModel.TAG_CALLS, "call is now: " + _audioCall);
 
             // Auto-answer all incoming calls
-            callAnswer();
+            //callAnswer();
 
             _mainActivity.updateCallStatus(_audioCall);
         } catch (Exception e){

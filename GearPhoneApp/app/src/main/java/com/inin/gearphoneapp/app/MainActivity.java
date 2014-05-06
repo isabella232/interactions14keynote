@@ -8,8 +8,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Button;
 import android.view.View;
@@ -21,6 +24,7 @@ import com.inin.gearphoneapp.app.icws.IcwsService;
 
 import com.inin.gearphoneapp.app.pref.PreferencesActivity;
 import com.inin.gearphoneapp.app.util.AppLog;
+import com.inin.gearphoneapp.app.util.PhoneMenuArrayAdapter;
 
 public class MainActivity extends Activity {
     private GearAccessoryProviderService _service = null;
@@ -29,6 +33,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{
+            //TODO: This is here for debug purposes to keep the screen on. Remove for published builds.
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
             //  _service = new HelloAccessoryProviderService();
@@ -75,8 +82,11 @@ public class MainActivity extends Activity {
             Intent intent = new Intent(this, IcwsService.class);
             startService(intent);
 
-            //TODO: This is here for debug purposes to keep the screen on. Remove for published builds.
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            // Initialize drawer menu
+            String[] items = {"Answer","Mute","Hold","Speaker","Disconnect"};
+            ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
+            mDrawerList.setAdapter(new PhoneMenuArrayAdapter(this, items));
+            mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
             // Get/initialize the model
             _sipModel = SipModel.GetInstance(this);
@@ -164,32 +174,35 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void callControlAction(View view){
-        try{
-            switch (view.getId()){
-//                case R.id.button_toggleMute:{
-//                    _sipModel.callToggleMute();
-//                    break;
-//                }
-//                case R.id.button_toggleSpeaker:{
-//                    _sipModel.callToggleSpeaker();
-//                    break;
-//                }
-//                case R.id.button_disconnect:{
-//                    _sipModel.callDisconnect();
-//                    break;
-//                }
-//                case R.id.button_hold:{
-//                    _sipModel.callToggleHold();
-//                    break;
-//                }
-//                case R.id.button_answer:{
-//                    _sipModel.callAnswer();
-//                    break;
-//                }
+    public class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView parent, View view, int position, long id) {
+            try{
+                switch (position){
+                    case 0:{
+                        _sipModel.callAnswer();
+                        break;
+                    }
+                    case 1:{
+                        _sipModel.callToggleMute();
+                        break;
+                    }
+                    case 2:{
+                        _sipModel.callToggleHold();
+                        break;
+                    }
+                    case 3:{
+                        _sipModel.callToggleSpeaker();
+                        break;
+                    }
+                    case 4:{
+                        _sipModel.callDisconnect();
+                        break;
+                    }
+                }
+            } catch (Exception e){
+                Log.e(HelperModel.TAG_MAIN, "Error executing call control action.", e);
             }
-        } catch (Exception e){
-            Log.e(HelperModel.TAG_MAIN, "Error executing call control action.", e);
         }
     }
 

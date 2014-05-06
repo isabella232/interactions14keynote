@@ -9,7 +9,7 @@ $(window).load(function(){
             tizen.application.getCurrentApplication().exit();
     });
 	
-	$( "#btnReset" ).click(function() {
+	$( "#logoImage" ).click(function() {
 		  connect();
 	});
 	
@@ -74,10 +74,27 @@ $(window).load(function(){
 	
 	
 	setInterval( function() {
-		var seconds = new Date().getSeconds();
-		var minutes = new Date().getMinutes();
-		var hours = new Date().getHours();
-		$('#clock').text(( hours < 10 ? "0" : "" ) + (hours % 12) + ':' + ( minutes < 10 ? "0" : "" ) + minutes + ':' + ( seconds < 10 ? "0" : "" ) + seconds + ' ' + ( hours < 12 ? "AM" : "PM" ));
+		var currentDate = new Date();
+		var options = {weekday: "short", year: "numeric", month: "short", day: "numeric"};
+		
+		$('#date').text(currentDate.toLocaleDateString("en-US", options))
+		
+		
+		var seconds = currentDate.getSeconds();
+		var minutes = currentDate.getMinutes();
+		var hours = currentDate.getHours();
+		
+		if(hours > 12){
+			hours = hours % 12;
+		} 
+		
+		$('#ampm').text(( hours < 12 ? "AM" : "PM" ));
+		
+		if(hours == 0){
+			hours = 12;
+		}
+		
+		$('#clock').text(( hours < 10 ? "0" : "" ) + hours + ':' + ( minutes < 10 ? "0" : "" ) + minutes); // ;
 		
     }, 1000);	
 	

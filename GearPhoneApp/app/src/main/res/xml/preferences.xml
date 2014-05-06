@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_connection_settings"
+        android:key="pref_key_connection_settings">
+        <EditTextPreference
+            android:key="pref_server"
+            android:title="@string/pref_server"
+            android:summary="@string/pref_sync_summary"
+            android:defaultValue=""
+            />
+        <EditTextPreference
+            android:key="pref_serverPort"
+            android:title="@string/pref_serverPort"
+            android:summary="@string/pref_serverPortSummary"
+            android:defaultValue="8060"
+            />
+        <EditTextPreference
+            android:key="pref_stationIdentificationAddress"
+            android:title="@string/pref_stationIdentificationAddress"
+            android:summary="@string/pref_stationIdentificationAddressSummary"
+            android:defaultValue=""
+            />
+    </PreferenceCategory>
+
+</PreferenceScreen>

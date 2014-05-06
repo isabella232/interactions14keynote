@@ -4,5 +4,15 @@
     <string name="app_name">GearPhoneApp</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="pref_server">Server Address</string>
+    <string name="pref_sync_summary">The name of the SIP registration server, typically the CIC server</string>
+    <string name="pref_connection_settings">Connection Settings</string>
+    <string name="pref_stationIdentificationAddress">Staton Identification Address</string>
+    <string name="pref_stationIdentificationAddressSummary">The identification address (user portion) for the station</string>
+    <string name="pref_serverPort">Server Port</string>
+    <string name="pref_serverPortSummary">The port on which the SIP messages will be delivered to the server</string>
+    <string name="button_RegisterStation">Register</string>
+    <string name="stationStateText">Touch to register station</string>
+    <string name="title_activity_settings">Settings</string>
 
 </resources>

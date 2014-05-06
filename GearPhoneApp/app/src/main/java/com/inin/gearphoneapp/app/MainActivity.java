@@ -1,68 +1,134 @@
 package com.inin.gearphoneapp.app;
 
 import android.app.Activity;
+import android.net.sip.SipAudioCall;
+import android.net.sip.SipProfile;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 import android.view.View;
 import 	android.content.Intent;
+
+import com.inin.gearphoneapp.app.Sip.HelperModel;
+import com.inin.gearphoneapp.app.Sip.SipModel;
 import com.inin.gearphoneapp.app.icws.IcwsService;
 
+import com.inin.gearphoneapp.app.pref.PreferencesActivity;
 import com.inin.gearphoneapp.app.util.AppLog;
 
 public class MainActivity extends Activity {
     private GearAccessoryProviderService _service = null;
+    private SipModel _sipModel = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-      //  _service = new HelloAccessoryProviderService();
-        AppLog.init((TextView) findViewById(R.id.logText));
+        try{
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+            //  _service = new HelloAccessoryProviderService();
+            AppLog.init((TextView) findViewById(R.id.logText));
 
 
-        Button btnFakeAlert = ((Button)findViewById(R.id.btnFakeAlert));
+            Button btnFakeAlert = ((Button)findViewById(R.id.btnFakeAlert));
 
-        btnFakeAlert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GearAccessoryProviderService.instance.newAlert("Negative Sentiment", "Something else", "Agent: Kevin Glinski","1234");
-            }
-        });
+            btnFakeAlert.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    GearAccessoryProviderService.instance.newAlert("Negative Sentiment", "Something else", "Agent: Kevin Glinski","1234");
+                }
+            });
 
 
-        Button btnClearAlert = ((Button)findViewById(R.id.btnClearAlert));
+            Button btnClearAlert = ((Button)findViewById(R.id.btnClearAlert));
 
-        btnClearAlert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GearAccessoryProviderService.instance.clearAlerts();
-            }
-        });
+            btnClearAlert.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    GearAccessoryProviderService.instance.clearAlerts();
+                }
+            });
 
-        Button btnNewCall = ((Button)findViewById(R.id.btnNewCall));
+            Button btnNewCall = ((Button)findViewById(R.id.btnNewCall));
 
-        btnNewCall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GearAccessoryProviderService.instance.newCall("Bob Loblaw", "(317) 222-2222", true, "1234");
-            }
-        });
+            btnNewCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    GearAccessoryProviderService.instance.newCall("Bob Loblaw", "(317) 222-2222", true, "1234");
+                }
+            });
 
-        Button btnConnect = ((Button)findViewById(R.id.btnConnect));
+            Button btnConnect = ((Button)findViewById(R.id.btnConnect));
 
-        btnConnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IcwsService.instance.connect();
-            }
-        });
+            btnConnect.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    IcwsService.instance.connect();
+                }
+            });
 
-        Intent intent = new Intent(this, IcwsService.class);
-        startService(intent);
+            Intent intent = new Intent(this, IcwsService.class);
+            startService(intent);
 
+            //TODO: This is here for debug purposes to keep the screen on. Remove for published builds.
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+            // Get/initialize the model
+            _sipModel = SipModel.GetInstance(this);
+        } catch (Exception e){
+            Log.e(HelperModel.TAG_MAIN, "Error in onCreate.", e);
+        }
+    }
+
+    @Override
+    public void onStart(){
+        try{
+            Log.v(HelperModel.TAG_MAIN, "onStart");
+            super.onStart();
+
+            // Register the call receiver intent to THIS ui
+            _sipModel.registerCallReceiver();
+
+            // Update UI with current info
+            updateCallStatus(_sipModel.getCall());
+            updateStationState();
+        } catch (Exception e){
+            Log.e(HelperModel.TAG_MAIN, "Error in onStart.", e);
+        }
+    }
+
+    @Override
+    public void onStop(){
+        try{
+            Log.v(HelperModel.TAG_MAIN, "onStop");
+            super.onStop();
+
+            // Unregister the call receiver intent from the UI before it is destroyed
+            _sipModel.unregisterCallReceiver();
+        } catch (Exception e){
+            Log.e(HelperModel.TAG_MAIN, "Error in onStop.", e);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        try{
+            Log.v(HelperModel.TAG_MAIN, "onDestroy");
+
+            //TODO: Figure out how to deregister when the app is actually exited -- this is called in multiple scenarios that are not exiting the app
+            // Force deregistration
+            //_sipModel.registerSipProfile(true);
+
+            // SUPER DESTROY!!!!
+            super.onDestroy();
+        } catch (Exception e){
+            Log.e(HelperModel.TAG_MAIN, "Error in onDestroy.", e);
+        }
     }
 
 
@@ -80,8 +146,193 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, PreferencesActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+
+    public void registerStation(View view){
+        try{
+            _sipModel.registerSipProfile(false);
+        } catch (Exception e){
+            Log.e(HelperModel.TAG_MAIN, "Error registering station.", e);
+        }
+    }
+
+    public void callControlAction(View view){
+        try{
+            switch (view.getId()){
+//                case R.id.button_toggleMute:{
+//                    _sipModel.callToggleMute();
+//                    break;
+//                }
+//                case R.id.button_toggleSpeaker:{
+//                    _sipModel.callToggleSpeaker();
+//                    break;
+//                }
+//                case R.id.button_disconnect:{
+//                    _sipModel.callDisconnect();
+//                    break;
+//                }
+//                case R.id.button_hold:{
+//                    _sipModel.callToggleHold();
+//                    break;
+//                }
+//                case R.id.button_answer:{
+//                    _sipModel.callAnswer();
+//                    break;
+//                }
+            }
+        } catch (Exception e){
+            Log.e(HelperModel.TAG_MAIN, "Error executing call control action.", e);
+        }
+    }
+
+    public void updateCallStatus(final SipAudioCall call) {
+        //Log.d(HelperModel.TAG_CALLS, "updateCallStatus: " + Arrays.toString(Thread.currentThread().getStackTrace()));
+        this.runOnUiThread(new Runnable() {
+            public void run() {
+                try{
+                    String info_statusMessage = "";
+                    String info_remoteAddress = "";
+                    String info_isHeld = "";
+                    String info_isMuted = "";
+                    String info_isSpeakerOn = "";
+
+                    if (call !=null){
+                        // Call status
+                        /*
+                        Note that the context of SipAudioCall.isInCall() is the audio connection between
+                        the Android phone and the server to which the call was placed and not between
+                        CIC and the PSTN. This is important  because of how CIC handles outbound
+                        calls. The audio path will be connected between the phone and CIC before the
+                        outbound PSTN call is connected. Because of this, the call will show as
+                        connected [to CIC] even when the call is still ringing the endpoint
+                        beyond the outbound gateway to the PSTN.
+                         */
+                        info_statusMessage = "Is Connected: " + call.isInCall();
+
+                        // Remote address
+                        SipProfile remoteProfile = call.getPeerProfile();
+                        if (remoteProfile != null){
+                            info_remoteAddress = remoteProfile.getDisplayName();
+                            if (info_remoteAddress == null){
+                                info_remoteAddress = remoteProfile.getUserName();
+                            }
+
+//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.describeContents: " + remoteProfile.describeContents());
+//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.getProtocol: " + remoteProfile.getProtocol());
+//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.getSendKeepAlive: " + remoteProfile.getSendKeepAlive());
+//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.getSipDomain: " + remoteProfile.getSipDomain());
+//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.getDisplayName: " + remoteProfile.getDisplayName());
+//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.getUserName: " + remoteProfile.getUserName());
+//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.getUriString: " + remoteProfile.getUriString());
+                        }
+
+                        SipProfile localProfile = call.getLocalProfile();
+                        if (localProfile != null){
+//                            Log.d(HelperModel.TAG_CALLS, "localProfile.describeContents: " + localProfile.describeContents());
+//                            Log.d(HelperModel.TAG_CALLS, "localProfile.getProtocol: " + localProfile.getProtocol());
+//                            Log.d(HelperModel.TAG_CALLS, "localProfile.getSendKeepAlive: " + localProfile.getSendKeepAlive());
+//                            Log.d(HelperModel.TAG_CALLS, "localProfile.getSipDomain: " + localProfile.getSipDomain());
+//                            Log.d(HelperModel.TAG_CALLS, "localProfile.getDisplayName: " + localProfile.getDisplayName());
+//                            Log.d(HelperModel.TAG_CALLS, "localProfile.getUserName: " + localProfile.getUserName());
+//                            Log.d(HelperModel.TAG_CALLS, "localProfile.getUriString: " + localProfile.getUriString());
+                        }
+
+                        // Is Held
+                        info_isHeld = "Is Held: " + call.isOnHold();
+
+                        // Is Muted
+                        info_isMuted = "Is Muted: " + call.isMuted();
+
+                        // Is Speaker On
+                        info_isSpeakerOn = "Is Speaker On: " + _sipModel.isSpeakerphoneOn();
+
+                        //TODO: Remove these debug messages
+                        //Log.d(HelperModel.TAG_CALLS, info_statusMessage);
+                        //Log.d(HelperModel.TAG_CALLS, info_isHeld);
+                        //Log.d(HelperModel.TAG_CALLS, info_isMuted);
+                        //Log.d(HelperModel.TAG_CALLS, info_isSpeakerOn);
+                    } else {
+                        Log.v(HelperModel.TAG_MAIN, "Call was null, no data will be displayed.");
+                    }
+
+                    // Do updates
+//                    TextView txtStatusMessage = (TextView) findViewById(R.id.info_statusMessage);
+//                    txtStatusMessage.setText(info_statusMessage);
+//
+//                    TextView txtRemoteAddress = (TextView) findViewById(R.id.info_remoteAddress);
+//                    txtRemoteAddress.setText(info_remoteAddress);
+//
+//                    TextView txtIsHeld = (TextView) findViewById(R.id.info_isHeld);
+//                    txtIsHeld.setText(info_isHeld);
+//
+//                    TextView txtIsMuted = (TextView) findViewById(R.id.info_isMuted);
+//                    txtIsMuted.setText(info_isMuted);
+//
+//                    TextView txtIsSpeakerOn = (TextView) findViewById(R.id.info_isSpeakerOn);
+//                    txtIsSpeakerOn.setText(info_isSpeakerOn);
+
+                    ImageView imgOnPhone = (ImageView) findViewById(R.id.image_OnPhone);
+                    if (call == null || !call.isInCall()){
+                        imgOnPhone.setImageResource(R.drawable.phone_receiver);
+                    }
+                    else{
+                        imgOnPhone.setImageResource(R.drawable.phone_call);
+                    }
+                } catch (Exception e){
+                    Log.e(HelperModel.TAG_MAIN, "General exception.", e);
+                }
+            }
+        });
+    }
+
+    public void updateStationState(){
+        this.runOnUiThread(new Runnable() {
+            public void run() {
+                try {
+                    Log.v(HelperModel.TAG_MAIN, "Station state is now: " + _sipModel.getStationState() + " (" + _sipModel.getStationMessage() + ")");
+
+                    ImageButton registerButton = (ImageButton) findViewById(R.id.button_RegisterStation);
+                    TextView stationStateText = (TextView) findViewById(R.id.stationStateText);
+
+                    switch(_sipModel.getStationState()){
+                        case Unknown:{
+                            registerButton.setImageResource(R.drawable.bullet_square_glass_grey);
+                            stationStateText.setText(_sipModel.getStationMessage());
+                            break;
+                        }
+                        case Registered:{
+                            registerButton.setImageResource(R.drawable.bullet_square_glass_green);
+                            stationStateText.setText("Registered " + _sipModel.getStationMessage());
+                            break;
+                        }
+                        case Unregistered:{
+                            registerButton.setImageResource(R.drawable.bullet_square_glass_yellow);
+                            stationStateText.setText("Unregistered " + _sipModel.getStationMessage());
+                            break;
+                        }
+                        case Attempting:{
+                            registerButton.setImageResource(R.drawable.bullet_square_glass_blue);
+                            stationStateText.setText("Attempting " + _sipModel.getStationMessage());
+                            break;
+                        }
+                        case Error:{
+                            registerButton.setImageResource(R.drawable.bullet_square_glass_red);
+                            stationStateText.setText("Error: " + _sipModel.getStationMessage());
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e(HelperModel.TAG_MAIN, "General exception.", e);
+                }
+            }
+        });
     }
 }

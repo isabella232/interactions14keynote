@@ -23,5 +23,33 @@
             android:defaultValue=""
             />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_call_settings"
+        android:key="pref_key_call_settings">
+        <CheckBoxPreference
+            android:key="pref_speaker_when_answer"
+            android:title="@string/pref_speaker_when_answer"
+            android:summary="@string/pref_speaker_when_answer_summary"
+            android:defaultValue=""
+            />
+        <CheckBoxPreference
+            android:key="pref_auto_answer"
+            android:title="@string/pref_auto_answer"
+            android:summary="@string/pref_auto_answer_summary"
+            android:defaultValue=""
+            />
+        <CheckBoxPreference
+            android:key="pref_start_calls_muted"
+            android:title="@string/pref_start_calls_muted"
+            android:summary="@string/pref_start_calls_muted_summary"
+            android:defaultValue=""
+            />
+        <CheckBoxPreference
+            android:key="pref_open_call_controls_on_alert"
+            android:title="@string/pref_open_call_controls_on_alert"
+            android:summary="@string/pref_open_call_controls_on_alert_summary"
+            android:defaultValue=""
+            />
+    </PreferenceCategory>
 
 </PreferenceScreen>

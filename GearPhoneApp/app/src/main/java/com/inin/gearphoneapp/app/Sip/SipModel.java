@@ -13,6 +13,7 @@ import android.net.sip.SipProfile;
 import android.net.sip.SipRegistrationListener;
 import android.net.sip.SipSession;
 import android.preference.PreferenceManager;
+import android.support.v7.appcompat.R;
 import android.util.Log;
 
 import com.inin.gearphoneapp.app.MainActivity;
@@ -101,12 +102,10 @@ public class SipModel {
             SipProfile remote = builder.build();
 
             Log.v(HelperModel.TAG_SIP, "Dialing " + remote.getUriString());
-            _audioCall = _sipManager.makeAudioCall(_stationProfile, remote, getSipAudioCallListener(), 30);
+            _audioCall = _sipManager.makeAudioCall(_stationProfile, remote, getOutboundSipAudioCallListener(), 30);
 
         } catch (ParseException e) {
             Log.e(HelperModel.TAG_SIP, "Unable to set up remote SipProfile.", e);
-//        } catch (SipException e) {
-//            Log.e(HelperModel.TAG_SIP, "SipAudioCall error.", e);
         } catch (Exception e){
             Log.e(HelperModel.TAG_SIP, "General error.", e);
         }
@@ -213,16 +212,27 @@ public class SipModel {
     public void callAnswer(){
         try {
             if (_audioCall.isInCall()) return;
+            Log.d(HelperModel.TAG_CALLS, "callAnswer");
 
+            // Get prefs
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(_mainActivity);
+            boolean useSpeaker = prefs.getBoolean(PreferencesFragment.KEY_PREF_SPEAKER_WHEN_ANSWER, false);
+            boolean startMuted = prefs.getBoolean(PreferencesFragment.KEY_PREF_START_CALLS_MUTED, false);
+
+            // Answer call
             _audioCall.answerCall(30);
             _audioCall.startAudio();
 
-            //TODO: Setting for default speakerphone and mute value
-            _audioCall.setSpeakerMode(true);
-            if(_audioCall.isMuted()) {
-                _audioCall.toggleMute();
-            }
+            // Turn on speaker
+            _audioCall.setSpeakerMode(useSpeaker);
 
+            // Start muted
+            if (startMuted && !_audioCall.isMuted())
+                _audioCall.toggleMute();
+            else if (_audioCall.isMuted())
+                _audioCall.toggleMute();
+
+            // Update
             _mainActivity.updateCallStatus(_audioCall);
         } catch (Exception e) {
             Log.e(HelperModel.TAG_SIP, "Error taking call.", e);
@@ -242,7 +252,13 @@ public class SipModel {
             Log.d(HelperModel.TAG_CALLS, "call is now: " + _audioCall);
 
             // Auto-answer all incoming calls
-            //callAnswer();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(_mainActivity);
+            boolean autoAnswer = prefs.getBoolean(PreferencesFragment.KEY_PREF_AUTO_ANSWER, false);
+            boolean openCallControls = prefs.getBoolean(PreferencesFragment.KEY_PREF_OPEN_CALL_CONTROLS_ON_ALERT, false);
+
+            if (autoAnswer) callAnswer();
+
+            if (openCallControls) _mainActivity.openCallControls();
 
             _mainActivity.updateCallStatus(_audioCall);
         } catch (Exception e){
@@ -384,16 +400,12 @@ public class SipModel {
             @Override
             public void onCallEstablished(SipAudioCall call) {
                 // Called when the session is established.
-                    /*
-                    NOTE: For some reason, this is also called when a remote disconnect happens.
-                    onCallEnded is called several seconds after the call is disconnected on the remote end.
-                     */
+                /*
+                NOTE: For some reason, this is also called when a remote disconnect happens.
+                onCallEnded is called several seconds after the call is disconnected on the remote end.
+                 */
                 Log.d(HelperModel.TAG_SIP, "onCallEstablished");
-
-                call.startAudio();
-                call.setSpeakerMode(true);
-
-                _mainActivity.updateCallStatus(call);
+                _mainActivity.updateCallStatus(_audioCall);
             }
 
             @Override
@@ -405,9 +417,107 @@ public class SipModel {
 
             @Override
             public void onCalling(SipAudioCall call) {
-                // Called when a request is sent out to initiate a new call.
-                Log.d(HelperModel.TAG_SIP, "onCalling");
+                try{
+                    // Called when a request is sent out to initiate a new call.
+                    Log.d(HelperModel.TAG_SIP, "onCalling");
+                    _mainActivity.updateCallStatus(call);
+                } catch (Exception e){
+                    Log.e(HelperModel.TAG_CALLS, "Error in onCalling", e);
+                }
+            }
+
+            @Override
+            public void onChanged(SipAudioCall call) {
+                // Called when an event occurs and the corresponding callback is not overridden.
+                Log.d(HelperModel.TAG_SIP, "onChanged");
                 _mainActivity.updateCallStatus(call);
+            }
+
+            @Override
+            public void onError(SipAudioCall call, int errorCode, String errorMessage) {
+                // Called when an error occurs.
+                    /*
+                    NOTE: This throws an exception randomly for no obvious reason. It appears that
+                    DNS resolution fails for some reason when dialing. Trying again immediately,
+                    without changing anything, will typically work. The error is:
+                    SIP Call Error: (-4) libcore.io.GaiException: getaddrinfo failed: EAI_NODATA (No address associated with hostname)
+                     */
+                Log.e(HelperModel.TAG_SIP, "SIP Call Error: (" + Integer.toString(errorCode) + ") " + errorMessage);
+                //TODO: notify user of failure
+                _audioCall = null;
+                _mainActivity.updateCallStatus(null);
+            }
+
+            @Override
+            public void onReadyToCall(SipAudioCall call) {
+                // Called when the call object is ready to make another call.
+                Log.d(HelperModel.TAG_SIP, "onReadyToCall");
+                _mainActivity.updateCallStatus(call);
+            }
+
+            @Override
+            public void onRinging(SipAudioCall call, SipProfile caller) {
+                // Called when a new call comes in.
+                Log.d(HelperModel.TAG_SIP, "onRinging");
+                _mainActivity.updateCallStatus(call);
+            }
+
+            @Override
+            public void onRingingBack(SipAudioCall call) {
+                // Called when a RINGING response is received for the INVITE request sent.
+                Log.d(HelperModel.TAG_SIP, "onRingingBack");
+                _mainActivity.updateCallStatus(call);
+            }
+        };
+    }
+
+    private SipAudioCall.Listener getOutboundSipAudioCallListener(){
+        return new SipAudioCall.Listener() {
+            @Override
+            public void onCallBusy(SipAudioCall call) {
+                // Called when the peer is busy during session initialization.
+                Log.d(HelperModel.TAG_SIP, "onCallBusy");
+                _mainActivity.updateCallStatus(call);
+            }
+
+            @Override
+            public void onCallEnded(SipAudioCall call) {
+                // Called when the session is terminated.
+                Log.d(HelperModel.TAG_SIP, "onCallEnded");
+                _audioCall = null;
+                _mainActivity.updateCallStatus(null);
+
+                //TODO: clean up UI when this happens -- call is always over now. The UI doesn't always get reliable information from call.isInCall() at this point.
+            }
+
+            @Override
+            public void onCallEstablished(SipAudioCall call) {
+                // Called when the session is established.
+                    /*
+                    NOTE: For some reason, this is also called when a remote disconnect happens.
+                    onCallEnded is called several seconds after the call is disconnected on the remote end.
+                     */
+                Log.d(HelperModel.TAG_SIP, "onCallEstablished");
+                callAnswer();
+                _mainActivity.updateCallStatus(_audioCall);
+            }
+
+            @Override
+            public void onCallHeld(SipAudioCall call) {
+                // Called when the call is on hold.
+                Log.d(HelperModel.TAG_SIP, "onCallHeld");
+                _mainActivity.updateCallStatus(call);
+            }
+
+            @Override
+            public void onCalling(SipAudioCall call) {
+                try{
+                    // Called when a request is sent out to initiate a new call.
+                    Log.d(HelperModel.TAG_SIP, "onCalling");
+                    _mainActivity.updateCallStatus(call);
+                } catch (Exception e){
+                    Log.e(HelperModel.TAG_CALLS, "Error in onCalling", e);
+                }
             }
 
             @Override

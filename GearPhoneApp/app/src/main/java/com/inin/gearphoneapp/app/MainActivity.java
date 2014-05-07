@@ -1,15 +1,22 @@
 package com.inin.gearphoneapp.app;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.sip.SipAudioCall;
 import android.net.sip.SipProfile;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,10 +36,14 @@ import com.inin.gearphoneapp.app.util.PhoneMenuArrayAdapter;
 public class MainActivity extends Activity {
     private GearAccessoryProviderService _service = null;
     private SipModel _sipModel = null;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try{
+            Log.v(HelperModel.TAG_MAIN, "onCreate");
+
             //TODO: This is here for debug purposes to keep the screen on. Remove for published builds.
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -83,15 +94,63 @@ public class MainActivity extends Activity {
             startService(intent);
 
             // Initialize drawer menu
-            String[] items = {"Answer","Mute","Hold","Speaker","Disconnect"};
+            String[] items = {"Answer","Mute","Hold","Speaker","Disconnect","Test call"};
             ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
             mDrawerList.setAdapter(new PhoneMenuArrayAdapter(this, items));
+
+            // Set list item click listener
             mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+            // Set listener for drawer open/close
+            mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                    R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+
+                /** Called when a drawer has settled in a completely closed state. */
+                public void onDrawerClosed(View view) {
+                    super.onDrawerClosed(view);
+                    //getActionBar().setTitle(mTitle);
+                    invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                }
+
+                /** Called when a drawer has settled in a completely open state. */
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+                    //getActionBar().setTitle(mDrawerTitle);
+                    invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                    updateCallStatus(_sipModel.getCall());
+                }
+            };
+            mDrawerLayout.setDrawerListener(mDrawerToggle);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setHomeButtonEnabled(true);
 
             // Get/initialize the model
             _sipModel = SipModel.GetInstance(this);
         } catch (Exception e){
             Log.e(HelperModel.TAG_MAIN, "Error in onCreate.", e);
+        }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        try{
+            // Sync the toggle state after onRestoreInstanceState has occurred.
+            mDrawerToggle.syncState();
+        } catch (Exception e){
+            Log.e(HelperModel.TAG_MAIN, "Error in onPostCreate.", e);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        try{
+            Log.v(HelperModel.TAG_MAIN, "onConfigurationChanged");
+            mDrawerToggle.onConfigurationChanged(newConfig);
+        } catch (Exception e){
+            Log.e(HelperModel.TAG_MAIN, "Error in onConfigurationChanged.", e);
         }
     }
 
@@ -105,8 +164,8 @@ public class MainActivity extends Activity {
             _sipModel.registerCallReceiver();
 
             // Update UI with current info
-            updateCallStatus(_sipModel.getCall());
             updateStationState();
+            updateCallStatus(_sipModel.getCall());
         } catch (Exception e){
             Log.e(HelperModel.TAG_MAIN, "Error in onStart.", e);
         }
@@ -151,6 +210,12 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -197,6 +262,11 @@ public class MainActivity extends Activity {
                     }
                     case 4:{
                         _sipModel.callDisconnect();
+                        mDrawerLayout.closeDrawers();
+                        break;
+                    }
+                    case 5:{
+                        _sipModel.makeCall("5000");
                         break;
                     }
                 }
@@ -206,6 +276,19 @@ public class MainActivity extends Activity {
         }
     }
 
+    public void openCallControls(){
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    mDrawerLayout.openDrawer(findViewById(R.id.left_drawer));
+                } catch (Exception e){
+                    Log.e(HelperModel.TAG_MAIN, "General exception.", e);
+                }
+            }
+        });
+    }
+
     public void updateCallStatus(final SipAudioCall call) {
         //Log.d(HelperModel.TAG_CALLS, "updateCallStatus: " + Arrays.toString(Thread.currentThread().getStackTrace()));
         this.runOnUiThread(new Runnable() {
@@ -213,9 +296,6 @@ public class MainActivity extends Activity {
                 try{
                     String info_statusMessage = "";
                     String info_remoteAddress = "";
-                    String info_isHeld = "";
-                    String info_isMuted = "";
-                    String info_isSpeakerOn = "";
 
                     if (call !=null){
                         // Call status
@@ -237,67 +317,59 @@ public class MainActivity extends Activity {
                             if (info_remoteAddress == null){
                                 info_remoteAddress = remoteProfile.getUserName();
                             }
-
-//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.describeContents: " + remoteProfile.describeContents());
-//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.getProtocol: " + remoteProfile.getProtocol());
-//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.getSendKeepAlive: " + remoteProfile.getSendKeepAlive());
-//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.getSipDomain: " + remoteProfile.getSipDomain());
-//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.getDisplayName: " + remoteProfile.getDisplayName());
-//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.getUserName: " + remoteProfile.getUserName());
-//                            Log.d(HelperModel.TAG_CALLS, "remoteProfile.getUriString: " + remoteProfile.getUriString());
                         }
-
-                        SipProfile localProfile = call.getLocalProfile();
-                        if (localProfile != null){
-//                            Log.d(HelperModel.TAG_CALLS, "localProfile.describeContents: " + localProfile.describeContents());
-//                            Log.d(HelperModel.TAG_CALLS, "localProfile.getProtocol: " + localProfile.getProtocol());
-//                            Log.d(HelperModel.TAG_CALLS, "localProfile.getSendKeepAlive: " + localProfile.getSendKeepAlive());
-//                            Log.d(HelperModel.TAG_CALLS, "localProfile.getSipDomain: " + localProfile.getSipDomain());
-//                            Log.d(HelperModel.TAG_CALLS, "localProfile.getDisplayName: " + localProfile.getDisplayName());
-//                            Log.d(HelperModel.TAG_CALLS, "localProfile.getUserName: " + localProfile.getUserName());
-//                            Log.d(HelperModel.TAG_CALLS, "localProfile.getUriString: " + localProfile.getUriString());
-                        }
-
-                        // Is Held
-                        info_isHeld = "Is Held: " + call.isOnHold();
-
-                        // Is Muted
-                        info_isMuted = "Is Muted: " + call.isMuted();
-
-                        // Is Speaker On
-                        info_isSpeakerOn = "Is Speaker On: " + _sipModel.isSpeakerphoneOn();
-
-                        //TODO: Remove these debug messages
-                        //Log.d(HelperModel.TAG_CALLS, info_statusMessage);
-                        //Log.d(HelperModel.TAG_CALLS, info_isHeld);
-                        //Log.d(HelperModel.TAG_CALLS, info_isMuted);
-                        //Log.d(HelperModel.TAG_CALLS, info_isSpeakerOn);
                     } else {
                         Log.v(HelperModel.TAG_MAIN, "Call was null, no data will be displayed.");
                     }
 
-                    // Do updates
-//                    TextView txtStatusMessage = (TextView) findViewById(R.id.info_statusMessage);
-//                    txtStatusMessage.setText(info_statusMessage);
-//
-//                    TextView txtRemoteAddress = (TextView) findViewById(R.id.info_remoteAddress);
-//                    txtRemoteAddress.setText(info_remoteAddress);
-//
-//                    TextView txtIsHeld = (TextView) findViewById(R.id.info_isHeld);
-//                    txtIsHeld.setText(info_isHeld);
-//
-//                    TextView txtIsMuted = (TextView) findViewById(R.id.info_isMuted);
-//                    txtIsMuted.setText(info_isMuted);
-//
-//                    TextView txtIsSpeakerOn = (TextView) findViewById(R.id.info_isSpeakerOn);
-//                    txtIsSpeakerOn.setText(info_isSpeakerOn);
-
+                    // Update on phone icon
                     ImageView imgOnPhone = (ImageView) findViewById(R.id.image_OnPhone);
-                    if (call == null || !call.isInCall()){
+                    if (call == null){
+                        imgOnPhone.setVisibility(View.GONE);
+                    }
+                    else if (!call.isInCall()){
+                        imgOnPhone.setVisibility(View.VISIBLE);
                         imgOnPhone.setImageResource(R.drawable.phone_receiver);
                     }
                     else{
+                        imgOnPhone.setVisibility(View.VISIBLE);
                         imgOnPhone.setImageResource(R.drawable.phone_call);
+                    }
+
+                    // Update drawer call controls
+                    //{"Answer","Mute","Hold","Speaker","Disconnect"}
+                    ListView listView = (ListView) findViewById(R.id.left_drawer);
+                    if (listView.getChildAt(0) != null){
+                        View rowView;
+                        //TextView rowText;
+                        //rowText= (TextView) rowView.findViewById(R.id.label);
+                        ImageView rowImage;
+
+                        // MUTE
+                        rowView = listView.getChildAt(1);
+                        rowImage = (ImageView) rowView.findViewById(R.id.icon);
+                        if (call != null && call.isMuted())
+                            rowImage.setBackgroundResource(R.drawable.border_background);
+                        else
+                            rowImage.setBackgroundColor(Color.TRANSPARENT);
+
+                        // HOLD
+                        rowView = listView.getChildAt(2);
+                        rowImage = (ImageView) rowView.findViewById(R.id.icon);
+                        if (call != null && call.isOnHold())
+                            rowImage.setBackgroundResource(R.drawable.border_background);
+                        else
+                            rowImage.setBackgroundColor(Color.TRANSPARENT);
+
+                        // SPEAKER
+                        rowView = listView.getChildAt(3);
+                        rowImage = (ImageView) rowView.findViewById(R.id.icon);
+                        if (call != null && _sipModel.isSpeakerphoneOn())
+                            rowImage.setBackgroundResource(R.drawable.border_background);
+                        else
+                            rowImage.setBackgroundColor(Color.TRANSPARENT);
+                    }else{
+                        Log.w(HelperModel.TAG_MAIN, "Unable to find list view items!");
                     }
                 } catch (Exception e){
                     Log.e(HelperModel.TAG_MAIN, "General exception.", e);

@@ -4,26 +4,39 @@
     <string name="app_name">GearPhoneApp</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="pref_server">Server Address</string>
-    <string name="pref_sync_summary">The name of the SIP registration server, typically the CIC server</string>
+
     <string name="pref_connection_settings">Connection Settings</string>
-    <string name="pref_stationIdentificationAddress">Staton Identification Address</string>
-    <string name="pref_stationIdentificationAddressSummary">The identification address (user portion) for the station</string>
-    <string name="pref_serverPort">Server Port</string>
-    <string name="pref_serverPortSummary">The port on which the SIP messages will be delivered to the server</string>
+    <string name="pref_connection_server">Server Address</string>
+    <string name="pref_connection_server_summary">The name of the CIC server</string>
+    <string name="pref_connection_station_port">StationRegistration Port</string>
+    <string name="pref_connection_station_port_summary">The port on which the SIP messages will be delivered to the server</string>
+    <string name="pref_connection_server_username">CIC Username</string>
+    <string name="pref_connection_server_username_summary">The CIC username</string>
+    <string name="pref_connection_server_password">CIC Password</string>
+    <string name="pref_connection_server_password_summary">The CIC Password</string>
+    <string name="pref_connection_station_identification_address">Station Identification Address</string>
+    <string name="pref_connection_station_identification_address_summary">The identification address (user portion) for the station</string>
+    <string name="pref_connection_icws_port">ICWS Port</string>
+    <string name="pref_connection_icws_port_summary">The port to use when connecting via ICWS</string>
+
+    <string name="pref_call_settings">Call Settings</string>
+    <string name="pref_call_speaker_when_answer">Enable speaker on answer</string>
+    <string name="pref_call_speaker_when_answer_summary">Enable to activate speakerphone automatically when answering a call</string>
+    <string name="pref_call_auto_answer">Auto-answer Calls</string>
+    <string name="pref_call_auto_answer_summary">Calls will be auto-answered when enabled</string>
+    <string name="pref_call_start_calls_muted">Start Calls Muted</string>
+    <string name="pref_call_start_calls_muted_summary">If checked, calls will be auto-muted when answered</string>
+    <string name="pref_call_open_call_controls_on_alert">Open call controls on alert</string>
+    <string name="pref_call_open_call_controls_on_alert_summary">If checked, opens the call controls when a new call arrives</string>
+
+    <string name="pref_alerts_settings">Alert Settings</string>
+    <string name="pref_alerts_queue">Monitored Queue</string>
+    <string name="pref_alerts_queue_summary">The name of the CIC workgroup queue to monitor</string>
+
     <string name="button_RegisterStation">Register</string>
     <string name="stationStateText">Touch to register station</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="pref_call_settings">Call Settings</string>
-    <string name="pref_speaker_when_answer">Enable speaker on answer</string>
-    <string name="pref_speaker_when_answer_summary">Enable to activate speakerphone automatically when answering a call</string>
-    <string name="pref_auto_answer">Auto-answer Calls</string>
-    <string name="pref_auto_answer_summary">Calls will be auto-answered when enabled</string>
-    <string name="pref_start_calls_muted">Start Calls Muted</string>
-    <string name="pref_start_calls_muted_summary">If checked, calls will be auto-muted when answered</string>
     <string name="drawer_open">Call controls open</string>
     <string name="drawer_close">Call controls closed</string>
-    <string name="pref_open_call_controls_on_alert">Open call controls on alert</string>
-    <string name="pref_open_call_controls_on_alert_summary">If checked, opens the call controls when a new call arrives</string>
 
 </resources>

@@ -7,17 +7,19 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.net.sip.SipAudioCall;
+import android.net.sip.SipErrorCode;
 import android.net.sip.SipException;
 import android.net.sip.SipManager;
 import android.net.sip.SipProfile;
 import android.net.sip.SipRegistrationListener;
 import android.net.sip.SipSession;
 import android.preference.PreferenceManager;
-import android.support.v7.appcompat.R;
 import android.util.Log;
 
 import com.inin.gearphoneapp.app.MainActivity;
+import com.inin.gearphoneapp.app.icws.IcwsService;
 import com.inin.gearphoneapp.app.pref.PreferencesFragment;
+import com.inin.gearphoneapp.app.util.HelperModel;
 
 import java.text.ParseException;
 
@@ -27,7 +29,7 @@ public class SipModel {
     private static SipModel _instance = null;
     private static final String ACTION_INCOMING_CALL = "android.SipDemo.INCOMING_CALL";
 
-    private MainActivity _mainActivity = null;
+    public MainActivity _mainActivity = null;
     private SipManager _sipManager = null;
     private IncomingCallReceiver _incomingCallReceiver = null;
     private AudioManager _audioManager = null;
@@ -135,9 +137,9 @@ public class SipModel {
 
             Log.v(HelperModel.TAG_SIP, "Getting registration settings...");
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(_mainActivity);
-            _prefServer = prefs.getString(PreferencesFragment.KEY_PREF_SERVER, "");
-            _prefPort = prefs.getString(PreferencesFragment.KEY_PREF_SERVER_PORT, "");
-            _prefStationId = prefs.getString(PreferencesFragment.KEY_PREF_STATION_ID, "");
+            _prefServer = prefs.getString(PreferencesFragment.KEY_PREF_CONNECTION_SERVER, "");
+            _prefPort = prefs.getString(PreferencesFragment.KEY_PREF_CONNECTION_STATION_PORT, "");
+            _prefStationId = prefs.getString(PreferencesFragment.KEY_PREF_CONNECTION_STATION_ID, "");
 
             // Create SIP URI from config parts
             String address = "sip:" + _prefStationId + "@" + _prefServer + ":" + _prefPort;
@@ -171,6 +173,9 @@ public class SipModel {
             if (_audioCall == null) return;
             _audioCall.toggleMute();
             _mainActivity.updateCallStatus(_audioCall);
+
+            // CIC Mute -- Specify value explicitly to make sure it matches what the SIP call state is; the ICWS value seems unreliable
+            IcwsService.instance.UserQueueReceiver.muteCall(_audioCall.isMuted());
         } catch (Exception e){
             Log.e(HelperModel.TAG_CALLS, "Error on call mute.", e);
         }
@@ -186,7 +191,11 @@ public class SipModel {
                 _audioCall.holdCall(0);
             else
                 _audioCall.continueCall(0);
+
             _mainActivity.updateCallStatus(_audioCall);
+
+            // CIC Hold -- Specify value explicitly to make sure it matches what the SIP call state is; the ICWS value seems unreliable
+            IcwsService.instance.UserQueueReceiver.holdCall(_audioCall.isOnHold());
         } catch (Exception e){
             Log.e(HelperModel.TAG_CALLS, "Error on call hold.", e);
         }
@@ -204,6 +213,9 @@ public class SipModel {
             _audioCall.endCall();
 
             _mainActivity.updateCallStatus(_audioCall);
+
+            // CIC Disconnect
+            IcwsService.instance.UserQueueReceiver.disconnectCall();
         } catch (Exception e){
             Log.e(HelperModel.TAG_CALLS, "Error on call disconnect.", e);
         }
@@ -216,8 +228,8 @@ public class SipModel {
 
             // Get prefs
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(_mainActivity);
-            boolean useSpeaker = prefs.getBoolean(PreferencesFragment.KEY_PREF_SPEAKER_WHEN_ANSWER, false);
-            boolean startMuted = prefs.getBoolean(PreferencesFragment.KEY_PREF_START_CALLS_MUTED, false);
+            boolean useSpeaker = prefs.getBoolean(PreferencesFragment.KEY_PREF_CALL_SPEAKER_WHEN_ANSWER, false);
+            boolean startMuted = prefs.getBoolean(PreferencesFragment.KEY_PREF_CALL_START_CALLS_MUTED, false);
 
             // Answer call
             _audioCall.answerCall(30);
@@ -234,6 +246,10 @@ public class SipModel {
 
             // Update
             _mainActivity.updateCallStatus(_audioCall);
+
+            // CIC Pickup
+            IcwsService.instance.UserQueueReceiver.pickupCall();
+
         } catch (Exception e) {
             Log.e(HelperModel.TAG_SIP, "Error taking call.", e);
         }
@@ -253,8 +269,8 @@ public class SipModel {
 
             // Auto-answer all incoming calls
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(_mainActivity);
-            boolean autoAnswer = prefs.getBoolean(PreferencesFragment.KEY_PREF_AUTO_ANSWER, false);
-            boolean openCallControls = prefs.getBoolean(PreferencesFragment.KEY_PREF_OPEN_CALL_CONTROLS_ON_ALERT, false);
+            boolean autoAnswer = prefs.getBoolean(PreferencesFragment.KEY_PREF_CALL_AUTO_ANSWER, false);
+            boolean openCallControls = prefs.getBoolean(PreferencesFragment.KEY_PREF_CALL_OPEN_CALL_CONTROLS_ON_ALERT, false);
 
             if (autoAnswer) callAnswer();
 
@@ -308,7 +324,7 @@ public class SipModel {
             }
 
             public void onRegistrationFailed(String localProfileUri, int errorCode, String errorMessage) {
-                Log.e(HelperModel.TAG_REGISTRATION_LISTENER, "Registration failed for " + localProfileUri + " --  Error: (" + Integer.toString(errorCode) + ") " + errorMessage);
+                Log.e(HelperModel.TAG_REGISTRATION_LISTENER, "Registration failed for " + localProfileUri + " [Error " + errorCode + ": " + SipErrorCode.toString(errorCode) + "] " + errorMessage);
                 setStationState(SipStationState.Error, errorMessage);
             }
         };
@@ -323,7 +339,7 @@ public class SipModel {
 
             public void onCallChangeFailed(SipSession session, int errorCode, String errorMessage){
                 // Called when an error occurs during session modification negotiation.
-                Log.e(HelperModel.TAG_SESSION_LISTENER, "SIP call change failed: (" + Integer.toString(errorCode) + ") " + errorMessage);
+                Log.e(HelperModel.TAG_SESSION_LISTENER, "SIP call change failed: [Error " + errorCode + ": " + SipErrorCode.toString(errorCode) + "] " + errorMessage);
             }
 
             public void onCallEnded(SipSession session){
@@ -343,7 +359,7 @@ public class SipModel {
 
             public void onError(SipSession session, int errorCode, String errorMessage){
                 // Called when an error occurs during session initialization and termination.
-                Log.e(HelperModel.TAG_SESSION_LISTENER, "SIP session error: (" + Integer.toString(errorCode) + ") " + errorMessage);
+                Log.e(HelperModel.TAG_SESSION_LISTENER, "SIP session error: [Error " + errorCode + ": " + SipErrorCode.toString(errorCode) + "] " + errorMessage);
             }
 
             public void onRegistering(SipSession session){
@@ -358,7 +374,7 @@ public class SipModel {
 
             public void onRegistrationFailed(SipSession session, int errorCode, String errorMessage){
                 // Called when the registration fails.
-                Log.e(HelperModel.TAG_SESSION_LISTENER, "SIP registration failed: (" + Integer.toString(errorCode) + ") " + errorMessage);
+                Log.e(HelperModel.TAG_SESSION_LISTENER, "SIP registration failed: [Error " + errorCode + ": " + SipErrorCode.toString(errorCode) + "] " + errorMessage);
             }
 
             public void onRegistrationTimeout(SipSession session){
@@ -442,7 +458,7 @@ public class SipModel {
                     without changing anything, will typically work. The error is:
                     SIP Call Error: (-4) libcore.io.GaiException: getaddrinfo failed: EAI_NODATA (No address associated with hostname)
                      */
-                Log.e(HelperModel.TAG_SIP, "SIP Call Error: (" + Integer.toString(errorCode) + ") " + errorMessage);
+                Log.e(HelperModel.TAG_SIP, "SIP Call Error: [Error " + errorCode + ": " + SipErrorCode.toString(errorCode) + "] " + errorMessage);
                 //TODO: notify user of failure
                 _audioCall = null;
                 _mainActivity.updateCallStatus(null);
@@ -536,7 +552,7 @@ public class SipModel {
                     without changing anything, will typically work. The error is:
                     SIP Call Error: (-4) libcore.io.GaiException: getaddrinfo failed: EAI_NODATA (No address associated with hostname)
                      */
-                Log.e(HelperModel.TAG_SIP, "SIP Call Error: (" + Integer.toString(errorCode) + ") " + errorMessage);
+                Log.e(HelperModel.TAG_SIP, "SIP Call Error: [Error " + errorCode + ": " + SipErrorCode.toString(errorCode) + "] " + errorMessage);
                 //TODO: notify user of failure
                 _audioCall = null;
                 _mainActivity.updateCallStatus(null);

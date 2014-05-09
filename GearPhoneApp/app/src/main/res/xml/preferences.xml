@@ -5,50 +5,78 @@
         android:title="@string/pref_connection_settings"
         android:key="pref_key_connection_settings">
         <EditTextPreference
-            android:key="pref_server"
-            android:title="@string/pref_server"
-            android:summary="@string/pref_sync_summary"
+            android:key="pref_connection_server"
+            android:title="@string/pref_connection_server"
+            android:summary="@string/pref_connection_server_summary"
             android:defaultValue=""
             />
         <EditTextPreference
-            android:key="pref_serverPort"
-            android:title="@string/pref_serverPort"
-            android:summary="@string/pref_serverPortSummary"
+            android:key="pref_connection_station_port"
+            android:title="@string/pref_connection_station_port"
+            android:summary="@string/pref_connection_station_port_summary"
             android:defaultValue="8060"
             />
         <EditTextPreference
-            android:key="pref_stationIdentificationAddress"
-            android:title="@string/pref_stationIdentificationAddress"
-            android:summary="@string/pref_stationIdentificationAddressSummary"
+            android:key="pref_connection_station_identification_address"
+            android:title="@string/pref_connection_station_identification_address"
+            android:summary="@string/pref_connection_station_identification_address_summary"
             android:defaultValue=""
+            />
+        <EditTextPreference
+            android:key="pref_connection_server_username"
+            android:title="@string/pref_connection_server_username"
+            android:summary="@string/pref_connection_server_username_summary"
+            android:defaultValue=""
+            />
+        <EditTextPreference
+            android:key="pref_connection_server_password"
+            android:title="@string/pref_connection_server_password"
+            android:summary="@string/pref_connection_server_password_summary"
+            android:defaultValue=""
+            />
+        <EditTextPreference
+            android:key="pref_connection_icws_port"
+            android:title="@string/pref_connection_icws_port"
+            android:summary="@string/pref_connection_icws_port_summary"
+            android:defaultValue="8018"
             />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/pref_call_settings"
         android:key="pref_key_call_settings">
         <CheckBoxPreference
-            android:key="pref_speaker_when_answer"
-            android:title="@string/pref_speaker_when_answer"
-            android:summary="@string/pref_speaker_when_answer_summary"
+            android:key="pref_call_speaker_when_answer"
+            android:title="@string/pref_call_speaker_when_answer"
+            android:summary="@string/pref_call_speaker_when_answer_summary"
             android:defaultValue=""
             />
         <CheckBoxPreference
-            android:key="pref_auto_answer"
-            android:title="@string/pref_auto_answer"
-            android:summary="@string/pref_auto_answer_summary"
+            android:key="pref_call_auto_answer"
+            android:title="@string/pref_call_auto_answer"
+            android:summary="@string/pref_call_auto_answer_summary"
             android:defaultValue=""
             />
         <CheckBoxPreference
-            android:key="pref_start_calls_muted"
-            android:title="@string/pref_start_calls_muted"
-            android:summary="@string/pref_start_calls_muted_summary"
+            android:key="pref_call_start_calls_muted"
+            android:title="@string/pref_call_start_calls_muted"
+            android:summary="@string/pref_call_start_calls_muted_summary"
             android:defaultValue=""
             />
         <CheckBoxPreference
-            android:key="pref_open_call_controls_on_alert"
-            android:title="@string/pref_open_call_controls_on_alert"
-            android:summary="@string/pref_open_call_controls_on_alert_summary"
+            android:key="pref_call_open_call_controls_on_alert"
+            android:title="@string/pref_call_open_call_controls_on_alert"
+            android:summary="@string/pref_call_open_call_controls_on_alert_summary"
             android:defaultValue=""
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_alerts_settings"
+        android:key="pref_alerts_settings">
+        <EditTextPreference
+            android:key="pref_alerts_queue"
+            android:title="@string/pref_alerts_queue"
+            android:summary="@string/pref_alerts_queue_summary"
+            android:defaultValue="Marketing"
             />
     </PreferenceCategory>
 

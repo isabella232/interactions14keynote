@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.inin.gearphoneapp.app.R;
-import com.inin.gearphoneapp.app.Sip.HelperModel;
 import com.inin.gearphoneapp.app.Sip.SipModel;
 
 public class PhoneMenuArrayAdapter extends ArrayAdapter<String> {

@@ -1,26 +1,27 @@
 package com.inin.gearphoneapp.app.pref;
 
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
 import com.inin.gearphoneapp.app.R;
-import com.inin.gearphoneapp.app.Sip.HelperModel;
-
-import java.net.InetAddress;
+import com.inin.gearphoneapp.app.util.HelperModel;
 
 public class PreferencesFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener  {
 
-    public static String KEY_PREF_SERVER = "pref_server";
-    public static String KEY_PREF_SERVER_PORT = "pref_serverPort";
-    public static String KEY_PREF_STATION_ID = "pref_stationIdentificationAddress";
-    public static String KEY_PREF_SPEAKER_WHEN_ANSWER = "pref_speaker_when_answer";
-    public static String KEY_PREF_AUTO_ANSWER = "pref_auto_answer";
-    public static String KEY_PREF_START_CALLS_MUTED = "pref_start_calls_muted";
-    public static String KEY_PREF_OPEN_CALL_CONTROLS_ON_ALERT = "pref_open_call_controls_on_alert";
+    public static String KEY_PREF_CONNECTION_SERVER = "pref_connection_server";
+    public static String KEY_PREF_CONNECTION_STATION_PORT = "pref_connection_station_port";
+    public static String KEY_PREF_CONNECTION_STATION_ID = "pref_connection_station_identification_address";
+    public static String KEY_PREF_CONNECTION_SERVER_USERNAME = "pref_connection_server_username";
+    public static String KEY_PREF_CONNECTION_SERVER_PASSWORD = "pref_connection_server_password";
+    public static String KEY_PREF_CONNECTION_ICWS_PORT = "pref_connection_icws_port";
+    public static String KEY_PREF_CALL_SPEAKER_WHEN_ANSWER = "pref_call_speaker_when_answer";
+    public static String KEY_PREF_CALL_AUTO_ANSWER = "pref_call_auto_answer";
+    public static String KEY_PREF_CALL_START_CALLS_MUTED = "pref_call_start_calls_muted";
+    public static String KEY_PREF_CALL_OPEN_CALL_CONTROLS_ON_ALERT = "pref_call_open_call_controls_on_alert";
+    public static String KEY_PREF_ALERTS_QUEUE = "pref_alerts_queue";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,16 +53,12 @@ public class PreferencesFragment extends PreferenceFragment implements SharedPre
             if (preference == null) return;
 
             // Determine which preference was changed
-            if (key.equals(KEY_PREF_SERVER)) {
-                String value = sharedPreferences.getString(key, "");
-                preference.setSummary(value);
-                Log.v(HelperModel.TAG, "SERVER CHANGED!!! -> " + value);
-            }
-            else if (key.equals(KEY_PREF_SERVER_PORT)){
-                String value = sharedPreferences.getString(key, "");
-                preference.setSummary("Port " + value);
-            }
-            else if (key.equals(KEY_PREF_STATION_ID)){
+            if (key.equals(KEY_PREF_CONNECTION_SERVER) ||
+                    key.equals(KEY_PREF_CONNECTION_STATION_PORT) ||
+                    key.equals(KEY_PREF_CONNECTION_STATION_ID) ||
+                    key.equals(KEY_PREF_CONNECTION_SERVER_USERNAME) ||
+                    key.equals(KEY_PREF_ALERTS_QUEUE) ||
+                    key.equals(KEY_PREF_CONNECTION_ICWS_PORT)) {
                 String value = sharedPreferences.getString(key, "");
                 preference.setSummary(value);
             }
@@ -69,31 +66,4 @@ public class PreferencesFragment extends PreferenceFragment implements SharedPre
             Log.e(HelperModel.TAG, "General error.", e);
         }
     }
-
-//    private class IpLookupAsync extends AsyncTask<String, Void, String> {
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            try {
-//                // Look up address
-//                InetAddress ipAddress = InetAddress.getByName(params[0]);
-//                Log.v(HelperModel.TAG, ipAddress.getHostAddress());
-//                return ipAddress.getHostAddress();
-//            } catch (Exception e){
-//                Log.e(HelperModel.TAG, "General error.", e);
-//            }
-//            return "";
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            try {
-//                // Set summary
-//                Preference preference = findPreference(KEY_PREF_SERVER);
-//                preference.setSummary(result);
-//            } catch (Exception e){
-//                Log.e(HelperModel.TAG, "General error.", e);
-//            }
-//        }
-//    }
 }

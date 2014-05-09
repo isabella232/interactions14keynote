@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.inin.gearphoneapp.app.icws.IcwsClient;
 import com.inin.gearphoneapp.app.util.AppLog;
+import com.inin.gearphoneapp.app.util.HelperModel;
 import com.samsung.android.sdk.SsdkUnsupportedException;
 import com.samsung.android.sdk.accessory.SA;
 import com.samsung.android.sdk.accessory.SAAgent;
@@ -31,7 +32,7 @@ public class GearAccessoryProviderService extends SAAgent {
 
     public static final int ACCESSORY_CHANNEL_ID = 104;
 
-    HashMap<Integer, GearAccessoryProviderConnection> mConnectionsMap = null;
+    HashMap<Integer, GearAccessoryProviderConnection> mConnectionsMap = new HashMap<Integer, GearAccessoryProviderConnection>();;
 
     private final IBinder mBinder = new LocalBinder();
 
@@ -43,6 +44,7 @@ public class GearAccessoryProviderService extends SAAgent {
 
     public GearAccessoryProviderService() {
         super(TAG, GearAccessoryProviderConnection.class);
+        Log.v(HelperModel.TAG_ACCESSORY,"GearAccessoryProviderService::ctor");
 
         GearAccessoryProviderService.instance = this;
     }
@@ -240,7 +242,9 @@ public class GearAccessoryProviderService extends SAAgent {
             for (GearAccessoryProviderConnection connection : mConnectionsMap.values()) {
                 connection.sendMessageToWatch(data.toString());
             }
-        }catch(org.json.JSONException jex){}
+        }catch(Exception e){
+            Log.e(HelperModel.TAG_ACCESSORY, "General error.", e);
+        }
 
     }
 

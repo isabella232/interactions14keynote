@@ -1,7 +1,8 @@
 package com.inin.gearphoneapp.app;
 
+import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.sip.SipAudioCall;
@@ -9,26 +10,21 @@ import android.net.sip.SipProfile;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Button;
-import android.view.View;
-import 	android.content.Intent;
 
-import com.inin.gearphoneapp.app.Sip.HelperModel;
+import com.inin.gearphoneapp.app.util.HelperModel;
 import com.inin.gearphoneapp.app.Sip.SipModel;
 import com.inin.gearphoneapp.app.icws.IcwsService;
-
 import com.inin.gearphoneapp.app.pref.PreferencesActivity;
 import com.inin.gearphoneapp.app.util.AppLog;
 import com.inin.gearphoneapp.app.util.PhoneMenuArrayAdapter;
@@ -49,52 +45,70 @@ public class MainActivity extends Activity {
 
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
+
             //  _service = new HelloAccessoryProviderService();
             AppLog.init((TextView) findViewById(R.id.logText));
 
 
             Button btnFakeAlert = ((Button)findViewById(R.id.btnFakeAlert));
-
             btnFakeAlert.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    GearAccessoryProviderService.instance.newAlert("Negative Sentiment", "Something else", "Agent: Kevin Glinski","1234");
+                    try{
+                        GearAccessoryProviderService.instance.newAlert("Negative Sentiment", "Something else", "Agent: Kevin Glinski","1234");
+                    } catch (Exception e){
+                        Log.e(HelperModel.TAG_MAIN, "General error", e);
+                    }
                 }
             });
 
 
             Button btnClearAlert = ((Button)findViewById(R.id.btnClearAlert));
-
             btnClearAlert.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    GearAccessoryProviderService.instance.clearAlerts();
+                    try{
+                        GearAccessoryProviderService.instance.clearAlerts();
+                    } catch (Exception e){
+                        Log.e(HelperModel.TAG_MAIN, "General error", e);
+                    }
                 }
             });
 
             Button btnNewCall = ((Button)findViewById(R.id.btnNewCall));
-
             btnNewCall.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    GearAccessoryProviderService.instance.newCall("Bob Loblaw", "(317) 222-2222", true, "1234");
+                    try{
+                        GearAccessoryProviderService.instance.newCall("Bob Loblaw", "(317) 222-2222", true, "1234");
+                    } catch (Exception e){
+                        Log.e(HelperModel.TAG_MAIN, "General error", e);
+                    }
                 }
             });
 
             Button btnConnect = ((Button)findViewById(R.id.btnConnect));
-
             btnConnect.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    IcwsService.instance.connect();
+                    try{
+                        IcwsService.instance.connect();
+                    } catch (Exception e){
+                        Log.e(HelperModel.TAG_MAIN, "General error", e);
+                    }
                 }
             });
 
+            // Start ICWS service
             Intent intent = new Intent(this, IcwsService.class);
             startService(intent);
 
+            // Start Gear Accessory service
+            intent = new Intent(this, GearAccessoryProviderService.class);
+            startService(intent);
+
             // Initialize drawer menu
-            String[] items = {"Answer","Mute","Hold","Speaker","Disconnect","Test call"};
+            String[] items = {"Answer","Mute","Hold","Speaker","Disconnect"};//,"Test call"};
             ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
             mDrawerList.setAdapter(new PhoneMenuArrayAdapter(this, items));
 
@@ -122,10 +136,15 @@ public class MainActivity extends Activity {
                 }
             };
             mDrawerLayout.setDrawerListener(mDrawerToggle);
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActionBar().setHomeButtonEnabled(true);
+            ActionBar actionBar = getActionBar();
+            if (actionBar != null){
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setHomeButtonEnabled(true);
+            }else{
+                Log.e(HelperModel.TAG_MAIN, "Unable to retrieve action bar!");
+            }
 
-            // Get/initialize the model
+            // Get/initialize the SIP model
             _sipModel = SipModel.GetInstance(this);
         } catch (Exception e){
             Log.e(HelperModel.TAG_MAIN, "Error in onCreate.", e);
@@ -199,7 +218,6 @@ public class MainActivity extends Activity {
             Log.e(HelperModel.TAG_MAIN, "Error in onDestroy.", e);
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

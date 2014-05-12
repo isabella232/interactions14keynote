@@ -1,5 +1,12 @@
 package com.inin.gearphoneapp.app.icws;
 
+import android.os.AsyncTask;
+import android.os.Looper;
+import android.support.v7.appcompat.R;
+import android.util.Log;
+
+import com.inin.gearphoneapp.app.util.HelperModel;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -75,7 +82,9 @@ public class IcwsClient {
 
     public JSONObject get(String url)
     {
-        HttpGet get = new HttpGet(String.format("%s/icws/%s%s", _server, _sessionId, url));
+        String requestUrl = String.format("%s/icws/%s%s", _server, _sessionId, url);
+        Log.d(HelperModel.TAG_ICWS, "GET: " + requestUrl);
+        HttpGet get = new HttpGet(requestUrl);
         String text = null;
 
         try {
@@ -88,13 +97,20 @@ public class IcwsClient {
             return obj;
 
         } catch (Exception e) {
-            return null;// e.getLocalizedMessage();
+            Log.e(HelperModel.TAG_ICWS, "General error.", e);
         }
+        return new JSONObject();
     }
 
     public JSONArray getArray(String url)
     {
-        HttpGet get = new HttpGet(String.format("%s/icws/%s%s", _server, _sessionId, url));
+        String requestUrl = String.format("%s/icws/%s%s", _server, _sessionId, url);
+        // Supress the trace if it's the messaging message; it fires every second
+        if (!url.contains("messaging/messages")){
+            Log.d(HelperModel.TAG_ICWS, "GET(array): " + requestUrl);
+        }
+        HttpGet get = new HttpGet(requestUrl);
+
         String text = null;
 
         try {
@@ -107,37 +123,67 @@ public class IcwsClient {
             return obj;
 
         } catch (Exception e) {
-            return null;// e.getLocalizedMessage();
+            Log.e(HelperModel.TAG_ICWS, "General error.", e);
+        }
+        return new JSONArray();
+    }
+
+
+    public void post(String url, JSONObject data){
+        // This must be done off the UI thread because Android will flat out block usage of certain classes on the UI thread.
+        new PostAsync().execute(new Object[]{url, data});
+    }
+
+    private class PostAsync extends AsyncTask<Object[], Integer, Integer>{
+        @Override
+        protected Integer doInBackground(Object[]... objects) {
+            try {
+                // This ends up being an array of objects...
+                String url = objects[0][0].toString();
+                JSONObject data = (JSONObject) objects[0][1];
+
+                String requestUrl = String.format("%s/icws/%s%s", _server, _sessionId, url);
+                Log.d(HelperModel.TAG_ICWS, "POST: " + requestUrl);
+                HttpPost post = new HttpPost(requestUrl);
+                post.setEntity(new ByteArrayEntity(data.toString().getBytes("UTF8")));
+                HttpResponse response = performOperation(post);
+            }
+            catch (Exception e) {
+                Log.e(HelperModel.TAG_ICWS, "Error on PUT.", e);
+                return -1;
+            }
+            return 0;
+        }
+    }
+
+    public void put(String url, JSONObject data){
+        // This must be done off the UI thread because Android will flat out block usage of certain classes on the UI thread.
+        new PutAsync().execute(new Object[]{url, data});
+    }
+
+    private class PutAsync extends AsyncTask<Object[], Integer, Integer>{
+        @Override
+        protected Integer doInBackground(Object[]... objects) {
+            try {
+                // This ends up being an array of objects...
+                String url = objects[0][0].toString();
+                JSONObject data = (JSONObject) objects[0][1];
+
+                String requestUrl = String.format("%s/icws/%s%s", _server, _sessionId, url);
+                Log.d(HelperModel.TAG_ICWS, "PUT: " + requestUrl);
+                HttpPut put = new HttpPut(requestUrl);
+                put.setEntity(new ByteArrayEntity(data.toString().getBytes("UTF8")));
+                HttpResponse response = performOperation(put);
+            }
+            catch (Exception e) {
+                Log.e(HelperModel.TAG_ICWS, "Error on PUT.", e);
+                return -1;
+            }
+            return 0;
         }
     }
 
 
-    public void post(String url, JSONObject data)
-    {
-        HttpPost post = new HttpPost(String.format("%s/icws/%s%s", _server, _sessionId, url));
 
-        try {
-            post.setEntity(new ByteArrayEntity(data.toString().getBytes("UTF8")));
-            HttpResponse response = performOperation(post);
-            return;
-        } catch (Exception e) {
-            return;// e.getLocalizedMessage();
-        }
-    }
-
-    public void put(String url, JSONObject data)
-    {
-        HttpPut put = new HttpPut(String.format("%s/icws/%s%s", _server, _sessionId, url));
-
-        try {
-            put.setEntity(new ByteArrayEntity(data.toString().getBytes("UTF8")));
-            HttpResponse response = performOperation(put);
-            return;
-        }
-        catch (Exception e) {
-            return;
-        }
-
-    }
 
 }

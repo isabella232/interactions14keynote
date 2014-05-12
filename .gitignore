@@ -98,4 +98,5 @@ packages/
 *.testsettings
 
 
-.build
+.build/
+.settings/

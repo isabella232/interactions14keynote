@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="js/jquery-1.9.1.js"></script>
+    <script type="text/javascript">
+
+        setInterval(function () {
+
+            $.get('rest.svc/getdata', function (data) {
+                var iframe = document.getElementById('watchIframe');
+                iframe.contentWindow.postMessage(data, iframe.src);
+            });
+
+
+           
+        }, 750);
+
+
+    </script>
+</head>
+<body>
+    <img src="img/WatchEmulator.png" height="490" width="431" />
+    <div style="background-color:red;height:320px;width:320px;position:absolute;left:58px;top:83px">
+        <iframe id="watchIframe" width="320" height="320" src="index.html" style="overflow:hidden;border-width:0px" scrolling="no" />
+    </div>
+</body>
+</html>

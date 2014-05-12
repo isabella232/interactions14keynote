@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, user-scalable=no"/>
+	<title>Wearable UI</title>
+	<link rel="stylesheet"  href="../../lib/tau/themes/default/tau.css">
+	<link rel="stylesheet"  href="../../css/style.css">
+</head>
+
+<body>
+<div class="ui-page">
+	<header class="ui-header">
+		<h2 class="ui-title">Button</h2>
+	</header>
+	<div class="ui-content content-padding">
+		<h3>Buttons</h3>
+		<div class="ui-grid-row">
+			<button type="button" class="ui-btn">Button Default</button>
+			<a href="#" class="ui-btn ui-color-red">A Button Red</a>
+			<input type="button" class="ui-btn ui-color-orange" value="Input Button Orange" />
+			<button type="button" class="ui-btn ui-color-green">Button Green</button>
+		</div>
+
+		<h3>Disabled</h3>
+		<div class="ui-grid-row">
+			<button type="button" class="ui-btn" disabled="disabled">Button disabled</button>
+			<input type="button" class="ui-btn ui-color-orange" value="Input Button disabled" disabled="disabled" />
+		</div>
+
+		<h3>Multi Line buttons</h3>
+		<div class="ui-grid-row">
+			<button type="button" class="ui-btn ui-multiline">Button<br />text</button>
+			<a href="#" class="ui-btn ui-color-red ui-multiline" >A Button<br />text</a>
+		</div>
+
+		<h3>Icon buttons</h3>
+		<div class="ui-grid-row">
+			<button type="button" class="ui-btn ui-btn-icon" style="background-image: url(images/00_icon_back_ef.png);">Button Icon</button>
+			<a href="#" class="ui-btn ui-color-red ui-btn-icon" style="background-image: url(images/00_icon_cancel_ef.png);">A Button Icon</a>
+		</div>
+
+		<h3>Inline buttons</h3>
+		<div>
+			<input type="button" class="ui-btn ui-color-orange ui-inline" value="Button" />
+			<a href="#" class="ui-btn ui-color-red ui-multiline ui-inline">A Button<br />text</a>
+		</div>
+
+		<h3>Align horizontal</h3>
+		<div class="ui-grid-col-3 button-group-height">
+			<button type="button" class="ui-btn">Button</button>
+			<a href="#" class="ui-btn ui-color-red" >A Button</a>
+			<input type="button" class="ui-btn ui-color-orange" value="Input Button" />
+		</div>
+
+		<h3>Align vertical</h3>
+		<div class="ui-grid-row">
+			<button type="button" class="ui-btn">Button</button>
+			<a href="#" class="ui-btn ui-color-red" >A Button</a>
+			<input type="button" class="ui-btn ui-color-orange" value="Input Button" />
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="../../lib/tau/js/tau.js"></script>
+</body>
+</html>

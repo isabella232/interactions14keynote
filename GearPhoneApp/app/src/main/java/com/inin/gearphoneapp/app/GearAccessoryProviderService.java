@@ -1,6 +1,7 @@
 package com.inin.gearphoneapp.app;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
@@ -14,6 +15,14 @@ import com.samsung.android.sdk.accessory.SAAgent;
 import com.samsung.android.sdk.accessory.SAPeerAgent;
 import com.samsung.android.sdk.accessory.SASocket;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -31,7 +40,7 @@ public class GearAccessoryProviderService extends SAAgent {
 
     public static final int ACCESSORY_CHANNEL_ID = 104;
 
-    HashMap<Integer, GearAccessoryProviderConnection> mConnectionsMap = null;
+    HashMap<Integer, GearAccessoryProviderConnection> mConnectionsMap = new HashMap<Integer, GearAccessoryProviderConnection>();
 
     private final IBinder mBinder = new LocalBinder();
 
@@ -237,6 +246,7 @@ public class GearAccessoryProviderService extends SAAgent {
             data.put("subTitle2", subTitle2);
             data.put("interactionId", interactionId);
 
+            sendDataToRemoteDisplay(data.toString());
             for (GearAccessoryProviderConnection connection : mConnectionsMap.values()) {
                 connection.sendMessageToWatch(data.toString());
             }
@@ -249,6 +259,7 @@ public class GearAccessoryProviderService extends SAAgent {
         JSONObject data = new JSONObject();
         data.put("messageType", "clearAlert");
 
+        sendDataToRemoteDisplay(data.toString());
         for(GearAccessoryProviderConnection connection : mConnectionsMap.values()){
             connection.sendMessageToWatch(data.toString() );
         }
@@ -264,6 +275,7 @@ public class GearAccessoryProviderService extends SAAgent {
             data.put("isListening", isListening);
             data.put("interactionId", interactionId);
 
+            sendDataToRemoteDisplay(data.toString());
             for (GearAccessoryProviderConnection connection : mConnectionsMap.values()) {
                 connection.sendMessageToWatch(data.toString());
             }
@@ -272,5 +284,36 @@ public class GearAccessoryProviderService extends SAAgent {
 
     public void clearCall(){
 
+    }
+
+
+    private class UpdateTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... data) {
+            HttpClient httpClient = new DefaultHttpClient();
+
+            HttpContext localContext = new BasicHttpContext();
+            HttpPost post = new HttpPost("http://digclayapps.dev2000.com/RemoteWatchDisplay/rest.svc/postdata");
+            String text = null;
+
+            try {
+                post.setEntity(new ByteArrayEntity(data[0].getBytes("UTF8")));
+
+                HttpResponse response = httpClient.execute(post, localContext);
+                HttpEntity entity = response.getEntity();
+
+            } catch (Exception e) {
+                AppLog.d(TAG,"unable to connect to the server " + e);
+                return "";// e.getLocalizedMessage();
+            }
+            return "";
+        }
+
+    }
+
+    private void sendDataToRemoteDisplay(String data){
+
+        UpdateTask task = new UpdateTask();
+        task.execute(new String[] { data });
     }
 }

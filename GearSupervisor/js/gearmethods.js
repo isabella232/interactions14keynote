@@ -1,4 +1,6 @@
-var SAAgent = null;
+    var isConnected = false;
+
+	var SAAgent = null;
 	var SASocket = null;
 	var CHANNELID = 104;
 	var ProviderAppName = "GearDemoApp";
@@ -7,6 +9,7 @@ var SAAgent = null;
 	function onerror(err) {
 		console.log(err);
 		setError(err);
+		isConnected= false;
 	}
 
 	function test(channelId, data) {
@@ -63,6 +66,10 @@ var SAAgent = null;
 	}
 
 	function connect() {
+		if(isConnected){
+			return;
+		}
+		
 		disconnect()
 		
 		if (SASocket) {
@@ -91,7 +98,6 @@ var SAAgent = null;
 		}
 	}
 
-	
 	function fetch() {
 		try {
 			SASocket.setDataReceiveListener(onreceive);

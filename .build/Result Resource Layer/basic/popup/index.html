@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, user-scalable=no"/>
+	<title>Wearable UI</title>
+	<link rel="stylesheet"  href="../../lib/tau/themes/default/tau.css">
+	<link rel="stylesheet"  href="../../css/style.css">
+	<script type="text/javascript" src="../../lib/tau/js/tau.js"></script>
+</head>
+
+<body>
+<div class="ui-page">
+	<header class="ui-header">
+		<h2 class="ui-title">Popup</h2>
+	</header>
+	<div class="ui-content content-padding">
+		<h3>Popup toast</h3>
+		<div class="ui-grid-row">
+			<a href="#popupToast" class="ui-btn" data-rel="popup">Popup toast</a>
+		</div>
+	
+		<h3>Buttons</h3>
+		<div class="ui-grid-row">
+			<a href="#1btnPopup" class="ui-btn" data-rel="popup">1btn popup</a>
+			<a href="#2btnPopup" class="ui-btn" data-rel="popup">2btn popup</a>
+		</div>
+
+		<h3>Input popup</h3>
+		<div class="ui-grid-row">
+			<a href="#radioPopup" class="ui-btn" data-rel="popup">Radio popup</a>
+			<a href="#checkPopup" class="ui-btn" data-rel="popup">Checkbox popup</a>
+		</div>
+
+		<h3>List popup</h3>
+		<div class="ui-grid-row">
+			<a href="#listPopup" class="ui-btn" data-rel="popup">List popup1</a>
+			<a href="#listNoTitlePopup" class="ui-btn" data-rel="popup">List popup2</a>
+			<a href="#listNoBtnPopup" class="ui-btn" data-rel="popup">List popup3</a>
+			<a href="#listNoTitleNoBtnPopup" class="ui-btn" data-rel="popup">List popup4</a>
+		</div>
+
+	</div>
+
+	<div id="1btnPopup" class="ui-popup">
+		<div class="ui-popup-header">Power saving mode</div>
+		<div class="ui-popup-content">
+			Turning on Power
+			saving mode will
+			limit the maximum
+			power
+		</div>
+		<div class="ui-popup-footer">
+			<button id="1btnPopup-cancel" class="ui-btn">Cancel</button>
+		</div>
+	</div>
+
+	<div id="2btnPopup" class="ui-popup">
+		<div class="ui-popup-header">Power saving mode</div>
+		<div class="ui-popup-content">
+			Turning on Power
+			saving mode will
+			limit the maximum
+			power
+		</div>
+		<div class="ui-popup-footer ui-grid-col-2">
+			<button id="2btnPopup-cancel" class="ui-btn">Cancel</button>
+			<button id="2btnPopup-ok" class="ui-btn">OK</button>
+		</div>
+	</div>
+
+	<div id="radioPopup" class="ui-popup">
+		<div class="ui-popup-header">Ringtones</div>
+		<div class="ui-popup-content" style="height:243px; overflow-y:scroll;">
+			<ul class="ui-listview">
+				<li class="li-has-radio">
+					<label>
+						Tone 1
+						<input type="radio" name="radioset" id="radio-1" checked="checked" />
+					</label>
+				</li>
+				<li class="li-has-radio">
+					<label>
+						Tone 2
+						<input type="radio" name="radioset" id="radio-2" />
+					</label>
+				</li>
+				<li class="li-has-radio">
+					<label>
+						Tone 3
+						<input type="radio" name="radioset" id="radio-3" />
+					</label>
+				</li>
+				<li class="li-has-radio">
+					<label>
+						Tone 4
+						<input type="radio" name="radioset" id="radio-4" />
+					</label>
+				</li>
+				<li class="li-has-radio">
+					<label>
+						Tone 5
+						<input type="radio" name="radioset" id="radio-5" />
+					</label>
+				</li>
+			</ul>
+		</div>
+		<div class="ui-popup-footer">
+			<button id="radioPopup-close" class="ui-btn">Close</button>
+		</div>
+	</div>
+
+	<div id="checkPopup" class="ui-popup">
+		<div class="ui-popup-header">When?</div>
+		<div class="ui-popup-content" style="height:243px; overflow-y:scroll;">
+			<ul class="ui-listview">
+				<li class="li-has-checkbox">
+					<label>
+						Monday
+						<input type="checkbox"/>
+					</label>
+				</li>
+				<li class="li-has-checkbox">
+					<label>
+						Tuesday
+						<input type="checkbox"/>
+					</label>
+				</li>
+				<li class="li-has-checkbox">
+					<label>
+						Wednesday
+						<input type="checkbox"/>
+					</label>
+				</li>
+				<li class="li-has-checkbox">
+					<label>
+						Thursday
+						<input type="checkbox"/>
+					</label>
+				</li>
+				<li class="li-has-checkbox">
+					<label>
+						Friday
+						<input type="checkbox"/>
+					</label>
+				</li>
+				<li class="li-has-checkbox">
+					<label>
+						Saturday
+						<input type="checkbox"/>
+					</label>
+				</li>
+				<li class="li-has-checkbox">
+					<label>
+						Sunday
+						<input type="checkbox"/>
+					</label>
+				</li>
+			</ul>
+		</div>
+		<div class="ui-popup-footer">
+			<button id="checkPopup-close" class="ui-btn">Close</button>
+		</div>
+	</div>
+
+	<div id="listPopup" class="ui-popup">
+		<div class="ui-popup-header">Change to</div>
+		<div class="ui-popup-content" style="height:180px; overflow-y:scroll;">
+			<ul class="ui-listview">
+				<li><a href="">Phone</a></li>
+				<li><a href="">Headset</a></li>
+				<li><a href="">Keyboard</a></li>
+				<li><a href="">Touchpad</a></li>
+				<li><a href="">Touchball</a></li>
+			</ul>
+		</div>
+		<div class="ui-popup-footer">
+			<button id="listPopup-cancel" class="ui-btn">Cancel</button>
+		</div>
+	</div>
+
+	<div id="listNoTitlePopup" class="ui-popup">
+		<div class="ui-popup-content" style="height:231px; overflow-y:scroll;">
+			<ul class="ui-listview">
+				<li>Ringtones 1</li>
+				<li>Ringtones 2</li>
+				<li>Ringtones 3</li>
+				<li>Ringtones 4</li>
+				<li>Ringtones 5</li>
+				<li>Ringtones 6</li>
+				<li>Ringtones 7</li>
+			</ul>
+		</div>
+		<div class="ui-popup-footer">
+			<button id="listNoTitlePopup-cancel" class="ui-btn">Cancel</button>
+		</div>
+	</div>
+
+	<div id="listNoBtnPopup" class="ui-popup">
+		<div class="ui-popup-header">Change to</div>
+		<div class="ui-popup-content" style="height:243px; overflow-y:scroll;">
+			<ul class="ui-listview">
+				<li>Phone</li>
+				<li>Headset</li>
+				<li>Keyboard</li>
+				<li>Touchpad</li>
+				<li>Touchball</li>
+			</ul>
+		</div>
+	</div>
+
+	<div id="listNoTitleNoBtnPopup" class="ui-popup">
+		<div class="ui-popup-content" style="height:294px; overflow-y:scroll;">
+			<ul class="ui-listview">
+				<li>Ringtones 1</li>
+				<li>Ringtones 2</li>
+				<li>Ringtones 3</li>
+				<li>Ringtones 4</li>
+				<li>Ringtones 5</li>
+				<li>Ringtones 6</li>
+				<li>Ringtones 7</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div id="popupToast" class="ui-popup ui-popup-toast">
+		<div class="ui-popup-content">
+			Saving contacts to sim on Samsung 
+		</div>
+	</div>
+	<script type="text/javascript" src="popup.js"></script>
+</div>
+</body>
+</html>

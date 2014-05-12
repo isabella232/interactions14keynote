@@ -8,7 +8,7 @@
 </Reference>
 <Reference URI="css/style.css">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
-<DigestValue>UAfer4o+ujwt8BgMv8/uav6fU4DYYpNjozhOHiOjgbM=</DigestValue>
+<DigestValue>8vLwqKAe7CEW0CmyIg7saz/eJ8VJGfH/88LzDf2gIsY=</DigestValue>
 </Reference>
 <Reference URI="icon.png">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
@@ -24,7 +24,7 @@
 </Reference>
 <Reference URI="index.html">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
-<DigestValue>fgtHGHOs8tthtZkgcKEBwgA8OxJQCKZkx6j/EnJLWfU=</DigestValue>
+<DigestValue>Ypzs7EhiOQg5W8ZpGCqrzkN0HBNFEi5XHzepagKo08M=</DigestValue>
 </Reference>
 <Reference URI="inin.png">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
@@ -40,7 +40,7 @@
 </Reference>
 <Reference URI="js/main.js">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
-<DigestValue>D3JLvHHgeAccqcon/WSrZn1rugnBDXhTkqGpwIjw5vM=</DigestValue>
+<DigestValue>SBJbd6ivbkcyX6mMSjr3d7IJEEPIxD0OIvi08MoAS5w=</DigestValue>
 </Reference>
 <Reference URI="res/xml/accessoryservices.xml">
 <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"></DigestMethod>
@@ -55,11 +55,11 @@
 </Reference>
 </SignedInfo>
 <SignatureValue>
-BTk0xMKppNQqQTE8yWTBIMtvisboN/bRbCXvkR2KKD7864MXcFZGJ9C5DO/KuvtJ8ZrT1qlEXcpH
-213Ar7s4eUPgkeKHUJ0PLp/hwD4sfH5IacoAP2wKggS3TCn1J5nFSVCC3jAEEchsnvTYDgVHF1wA
-HsWRiN6jBwzAXwWoG/HGU6HR3Ab3MszyKBm7cTJtZg8xCubsfhCAJVg8c00Y88k3hRyfelJN2Z8J
-Wgx/PC/AFWbQu4rOZBO/1uh4F01cFZtCQKgV3fB3pFBXU+Z6WkOlyjHoyseouRgudCjGlcraM7nb
-VMM1YspN8cYOcE0wTIhioneQKBemG5tPdPgpMw==
+h4gnIZICvxXNvxgTbErg1AhqFmemYhcBPUp0LRdbYBIQcUNCpuVM0ECJmWkEFn+x+hlEyxChdeu6
+QMp+erL3u80MW87tGmH1YeeD/bdGR8YuD1uGdj9deA/XyKDJFBKzV4Yyj11miNc/z9x9SjkWsLto
+uMLd845VsqHJaYJyCfoF7ChA7sxAtI4qAf3gVD8hK9i60UcQJr0WiMFTTvc/kvfczAzZfJhyOkfk
+bKqzF/m1FZxziwNltGnKibacO/gwf0fHjENMlUyOI2GFriGsukz1usVL+yavVtFjQ+qA29EnUtU2
+jR57jp8L/0DjhIXu5N0l4oHowTiNddFUujlAOg==
 </SignatureValue>
 <KeyInfo>
 <X509Data>

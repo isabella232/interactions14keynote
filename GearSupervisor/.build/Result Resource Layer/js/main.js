@@ -84,12 +84,17 @@ $(window).load(function(){
 		var minutes = currentDate.getMinutes();
 		var hours = currentDate.getHours();
 		
+		
 		if(hours > 12){
 			hours = hours % 12;
+			$('#pm').show();
+			$('#am').hide();
 		} 
-		
-		$('#ampm').text(( hours < 12 ? "AM" : "PM" ));
-		
+		else{
+			$('#am').show();
+			$('#pm').hide();
+		}
+	
 		if(hours == 0){
 			hours = 12;
 		}

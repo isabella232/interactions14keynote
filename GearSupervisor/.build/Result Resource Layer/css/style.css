@@ -112,14 +112,21 @@ button{
 
 #date{
 	position:absolute;
-	top:240px;
-	left:90px;
+	top:245px;
+	left:70px;
 }
 
-#ampm{
+.ampm{
 	margin-top:0px;
 	padding-top: 10px;
 	position:absolute;
 	left:250px;
+}
+
+#pm{
+	top:210px;
+}
+
+#am{
 	top:180px;
 }

@@ -1,5 +1,0 @@
-C:\inetpub\wwwroot\RemoteWatchDisplay\bin\RemoteWatchDisplay.dll
-C:\inetpub\wwwroot\RemoteWatchDisplay\bin\RemoteWatchDisplay.pdb
-C:\inetpub\wwwroot\RemoteWatchDisplay\obj\Release\RemoteWatchDisplay.csprojResolveAssemblyReference.cache
-C:\inetpub\wwwroot\RemoteWatchDisplay\obj\Release\RemoteWatchDisplay.dll
-C:\inetpub\wwwroot\RemoteWatchDisplay\obj\Release\RemoteWatchDisplay.pdb

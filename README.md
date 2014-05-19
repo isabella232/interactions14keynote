@@ -7,7 +7,7 @@ Code that will be used for the main keynote at Interactions '14
 Project Overview
 --------------------
 
-GearPhoneApp - the android application that runs on the phone and connects to the watch, ICWS on CIC and registers a SIP station
+GearPhoneApp - the android application that runs on the phone and connects to the watch, ICWS on CIC and registers a SIP station.  The plantronics code was pulled from the plantronics developer blog at http://developer.plantronics.com/community/pdcblog/blog/2012/11/26/plugging-into-plantronics-headset-sensor-events-via-android
 
 GearSupervisor - the tizen based application that runs on the Samsung Gear 2
 

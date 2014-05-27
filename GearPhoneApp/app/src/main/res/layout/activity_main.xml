@@ -5,25 +5,76 @@
     tools:context="com.inin.gearphoneapp.app.MainActivity"
     android:id="@+id/drawer_layout">
 
-    <RelativeLayout
-        android:layout_margin="6dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:layout_above="@+id/layout_stationControls"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:padding="5dip">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1">
             <TextView
-                android:id="@+id/logText"
-                android:text="@string/hello_world"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="CIC Connected"
+                android:id="@+id/txtCicConnection"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:width="400px"
+                android:layout_gravity="left" />
+
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Connect"
+                    android:id="@+id/btnConnect"
+
+                    android:background="#ff25ff41"
+                    android:layout_marginLeft="50dip"
+                    android:width="100dip" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Watch Connected"
+                android:id="@+id/txtWatchConnection"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:id="@+id/logText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="20dip"
+                android:paddingBottom="20dip" />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_weight="0" >
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Clear"
+                    android:id="@+id/btnClearAlert"
+                    android:layout_below="@+id/btnFakeAlert"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignStart="@+id/btnFakeAlert" />
+
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -32,14 +83,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true" />
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Clear Alert"
-                    android:id="@+id/btnClearAlert"
-                    android:layout_below="@+id/btnFakeAlert"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignStart="@+id/btnFakeAlert" />
+
 
                 <Button
                     android:layout_width="wrap_content"
@@ -49,65 +93,13 @@
                     android:layout_below="@+id/btnClearAlert"
                     android:layout_alignEnd="@+id/btnClearAlert" />
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Clear Call"
-                    android:id="@+id/btnClearCall"
-                    android:layout_below="@+id/btnNewCall"
-                    android:layout_alignEnd="@+id/btnNewCall"
-                    android:longClickable="true" />
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Connect"
-                    android:id="@+id/btnConnect"
-                    android:layout_below="@+id/btnClearCall"
-                    android:layout_alignEnd="@+id/btnClearAlert"
-                    android:layout_alignStart="@+id/btnNewCall"
-                    android:background="#ff25ff41" />
+
             </LinearLayout>
+
         </LinearLayout>
-        <LinearLayout android:id="@+id/layout_stationControls"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="0dp"
-        android:layout_alignParentBottom="true">
-        <ImageButton
-            android:id="@+id/button_RegisterStation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_weight="0"
-            android:text="@string/button_RegisterStation"
-            android:onClick="registerStation"
-            android:src="@drawable/bullet_square_glass_grey"
-            android:background="@drawable/bullet_square_glass_grey"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/stationStateText"
-            android:id="@+id/stationStateText"
-            android:gravity="center_vertical"
-            android:textAlignment="viewStart"
-            android:layout_weight="1"/>
-        <ImageView android:id="@+id/image_OnPhone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/phone_receiver"
-            android:layout_gravity="right"
-            android:layout_weight="0" />
-        </LinearLayout>
-    </RelativeLayout>
-    <ListView android:id="@+id/left_drawer"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="#111"/>
+
+
+
 
 </android.support.v4.widget.DrawerLayout>

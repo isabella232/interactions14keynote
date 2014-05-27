@@ -12,6 +12,10 @@ import 	java.util.HashMap;
 
 /**
  * Created by kevin.glinski on 4/30/14.
+ * This class encapsulates a queue and is used for both a user queue and
+ * a workgroup queue.  We cut some corners for the purpose of the demo
+ * and when we need to perform an action on a call, we assume there is just
+ * one call on the queue.
  */
 public class QueueWatcher implements IMessageReceiver {
 
@@ -30,7 +34,7 @@ public class QueueWatcher implements IMessageReceiver {
         _queueName = queueName;
 
         try {
-            JSONArray queueIDs = new JSONArray(); //new int[] {2,3,4,5}
+            JSONArray queueIDs = new JSONArray();
 
             JSONObject queueId = new JSONObject();
             queueId.put("queueType", queueType);
@@ -44,11 +48,12 @@ public class QueueWatcher implements IMessageReceiver {
             attributeNames.put("Eic_KwsCustomerLastKeyword");
             attributeNames.put("Eic_KwsCustomerNegativeScore");
             attributeNames.put("Eic_KwsCustomerNumSpotted");
-            attributeNames.put("Eic_KwsCustomerPositiveScore");
             attributeNames.put("Eic_CallStateString");
             attributeNames.put("Eic_RemoteID");
             attributeNames.put("Eic_RemoteName");
             attributeNames.put("Eic_UserName");
+            attributeNames.put("Eic_Queue");
+            attributeNames.put("Eic_WorkgroupName");
 
             JSONObject obj = new JSONObject();
             obj.put("queueIds", queueIDs);
@@ -132,6 +137,7 @@ public class QueueWatcher implements IMessageReceiver {
     }
 
     public String findCallWithLowestCustomerScore(){
+
         if(_interactions.size() == 0){
             return "";
         }
@@ -211,7 +217,10 @@ public class QueueWatcher implements IMessageReceiver {
 
     public String getRemoteName(String interactionId){
         try {
-            return _interactions.get(interactionId).getJSONObject("attributes").getString("Eic_RemoteName");
+            String name = _interactions.get(interactionId).getJSONObject("attributes").getString("Eic_RemoteName");
+
+            return name;
+
         } catch (Exception e){
             Log.e(HelperModel.TAG_QUEUE_WATCHER, "General error.", e);
         }
@@ -238,7 +247,28 @@ public class QueueWatcher implements IMessageReceiver {
 
     public String getUserName(String interactionId){
         try{
-            return _interactions.get(interactionId).getJSONObject("attributes").getString("Eic_UserName");
+            String name = _interactions.get(interactionId).getJSONObject("attributes").getString("Eic_UserName");
+
+            name = name.replace(".", " ");
+
+            char[] chars = name.toCharArray();
+            chars[0] = Character.toUpperCase(chars[0]);
+
+            int lastNameIndex = name.indexOf(' ')+1;
+            chars[lastNameIndex] = Character.toUpperCase(chars[lastNameIndex]);
+
+            return new String(chars);
+
+
+        } catch (Exception e){
+            Log.e(HelperModel.TAG_QUEUE_WATCHER, "General error.", e);
+        }
+        return "";
+    }
+
+    public String getWorkgroup(String interactionId){
+        try{
+            return _interactions.get(interactionId).getJSONObject("attributes").getString("Eic_WorkgroupName");
         } catch (Exception e){
             Log.e(HelperModel.TAG_QUEUE_WATCHER, "General error.", e);
         }
@@ -261,7 +291,18 @@ public class QueueWatcher implements IMessageReceiver {
             String interactionId = findFirstNonDisconnectedCall();
             if (interactionId == "") return;
 
-            _icwsClient.post("/interactions/"+interactionId+"/pickup", new JSONObject());
+            _icwsClient.post("/interactions/"+interactionId+"/disconnect", new JSONObject());
+        } catch (Exception e){
+            Log.e(HelperModel.TAG_QUEUE_WATCHER, "General error.", e);
+        }
+    }
+
+    public void joinCall(){
+        try{
+            String interactionId = findFirstNonDisconnectedCall();
+            if (interactionId == "") return;
+
+            _icwsClient.post("/interactions/"+interactionId+"/join", new JSONObject());
         } catch (Exception e){
             Log.e(HelperModel.TAG_QUEUE_WATCHER, "General error.", e);
         }

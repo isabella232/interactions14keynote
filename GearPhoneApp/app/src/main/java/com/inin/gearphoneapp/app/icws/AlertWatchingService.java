@@ -50,15 +50,14 @@ public class AlertWatchingService implements IMessageReceiver {
 
                 AlertAction action = _alertCatalog.getAlertAction(ruleId);
 
-                if(action != null)
+                if(action != null && alert.getBoolean("cleared") != true)
                 {
                     AppLog.d("AlertWatchingService","Got Alert " + action.getText());
-              //      _watchService.alertAdded(action);
 
                     if(action.getText().equalsIgnoreCase("WorstActiveCustomerKwScore")) {
                         String interactionId = _queueWatcher.findCallWithLowestCustomerScore();
 
-                        GearAccessoryProviderService.instance.newAlert("Negative Sentiment", _queueWatcher.getRemoteName(interactionId), "", interactionId);
+                        GearAccessoryProviderService.instance.newAlert("Negative Sentiment", "Agent: " + _queueWatcher.getUserName(interactionId), "Workgroup: " + _queueWatcher.getWorkgroup(interactionId), interactionId);
                     }
                 }
                 else

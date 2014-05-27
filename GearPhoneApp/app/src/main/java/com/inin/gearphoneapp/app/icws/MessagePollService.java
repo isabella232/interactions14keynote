@@ -7,6 +7,8 @@ import java.util.List;
 import org.json.JSONArray;
 
 import org.json.JSONObject;
+
+import com.inin.gearphoneapp.app.MainActivity;
 import com.inin.gearphoneapp.app.util.AppLog;
 /**
  * Created by kevin.glinski on 3/26/14.
@@ -68,7 +70,7 @@ public class MessagePollService {
                 }
                 catch(Exception e)
                 {
-
+                    MainActivity.setCicConnectionState(false);
                 }
             }
 

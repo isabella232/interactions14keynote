@@ -9,12 +9,13 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.inin.gearphoneapp.app.MainActivity;
-import com.inin.gearphoneapp.app.Sip.SipModel;
 import com.inin.gearphoneapp.app.pref.PreferencesFragment;
 import com.inin.gearphoneapp.app.util.HelperModel;
 
 /**
  * Created by kevin.glinski on 4/30/14.
+ * This class is an Android service that lets it run in the background
+ * to keep the ICWS connection to the server.
  */
 public class IcwsService extends Service {
     public static IcwsService instance;
@@ -32,10 +33,11 @@ public class IcwsService extends Service {
             try {
                 Log.v(HelperModel.TAG_ICWS, "Connecting...");
                 ConnectionService c = new ConnectionService();
+                String devicePhoneNumber = urls[0];
 
                 // Get preferences for the connection
                 //TODO: Good god that's gross... Need a better pattern for accessing settings.
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SipModel.GetInstance(null)._mainActivity);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.getInstance());
                 String server = prefs.getString(PreferencesFragment.KEY_PREF_CONNECTION_SERVER, "");
                 String username = prefs.getString(PreferencesFragment.KEY_PREF_CONNECTION_SERVER_USERNAME, "");
                 String password = prefs.getString(PreferencesFragment.KEY_PREF_CONNECTION_SERVER_PASSWORD, "");
@@ -45,7 +47,7 @@ public class IcwsService extends Service {
                 // Connect
                 server = "http://" + server + ":" + port;
                 Log.v(HelperModel.TAG_ICWS, "Connecting to " + server + " as " + username);
-                _icwsClient = c.connect(username, password, server);
+                _icwsClient = c.connect(username, password, server, devicePhoneNumber);
 
                 // Stop message poll service if it's running
                 if (_messagePollService != null) {
@@ -58,7 +60,7 @@ public class IcwsService extends Service {
                 // Why sleep? Race condition?
                 Thread.sleep(500);
 
-                // ???
+                // Initialze the alertCatalog which will keep track of configured supervisor alerts
                 IMessageReceiver alertCatalog = new AlertCatalog();
                 _messagePollService.RegisterReceiver(alertCatalog);
 
@@ -82,11 +84,11 @@ public class IcwsService extends Service {
         }
     }
 
-    public void connect(){
+    public void connect(String devicePhoneNumber){
         try{
             // Execute connect async
             ConnectTask task = new ConnectTask();
-            task.execute(new String[] { "" });
+            task.execute(new String[] { devicePhoneNumber });
         }catch(Exception e){
             Log.e(HelperModel.TAG_ICWS, "General error.", e);
         }

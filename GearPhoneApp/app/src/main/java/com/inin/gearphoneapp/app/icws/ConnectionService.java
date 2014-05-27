@@ -10,7 +10,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.json.JSONObject;
 import org.apache.http.entity.ByteArrayEntity;
+
+import com.inin.gearphoneapp.app.MainActivity;
 import com.inin.gearphoneapp.app.util.AppLog;
+import android.telephony.TelephonyManager;
+
 /**
  * Created by kevin.glinski on 3/25/14.
  */
@@ -37,7 +41,7 @@ public class ConnectionService {
     }
 
 
-    public IcwsClient connect(String user, String password, String server){
+    public IcwsClient connect(String user, String password, String server, String devicePhoneNumber){
         HttpClient httpClient = new DefaultHttpClient();
 
         HttpContext localContext = new BasicHttpContext();
@@ -64,7 +68,11 @@ public class ConnectionService {
 
             if(obj.has("errorCode")){
                 AppLog.e(TAG, obj.getString("message"));
+
+                MainActivity.setCicConnectionState(false);
+                return null;
             }
+
 
             String csrfToken = obj.getString("csrfToken");
             String cookie = response.getFirstHeader("set-cookie").getValue();
@@ -72,6 +80,15 @@ public class ConnectionService {
             AppLog.d(TAG,"Connected Session: " + sessionId);
 
             IcwsClient client = new IcwsClient(server,sessionId,cookie,csrfToken);
+
+            JSONObject stationData = new JSONObject();
+            data.put("__type", "urn:inin.com:connection:remoteNumberSettings");
+            data.put("remoteNumber", devicePhoneNumber );
+           // client.put("/connection/station", data);
+
+
+            MainActivity.setCicConnectionState(true);
+
             return client;
 
         } catch (Exception e) {

@@ -31,6 +31,7 @@ import java.util.HashMap;
 
 /**
  * Created by kevin.glinski on 4/29/14.
+ * This is the main class that we use to communicate with the Gear2 watch.
  */
 public class GearAccessoryProviderService extends SAAgent {
     public static GearAccessoryProviderService instance;
@@ -74,6 +75,7 @@ public class GearAccessoryProviderService extends SAAgent {
 
         @Override
         public void onReceive(int channelId, byte[] dataBytes) {
+            //we received a message from the watch, now we need to process it.
             AppLog.d(TAG, "onReceive");
 
             try {
@@ -164,6 +166,9 @@ public class GearAccessoryProviderService extends SAAgent {
 
         @Override
         protected void onServiceConnectionLost(int errorCode) {
+
+            //package com.inin.gearphoneapp.app
+            MainActivity.setWatchConnectionState(false);
             AppLog.e(TAG, "onServiceConectionLost  for peer = " + mConnectionId
                     + "error code =" + errorCode);
 
@@ -224,6 +229,8 @@ public class GearAccessoryProviderService extends SAAgent {
                 Toast.makeText(getBaseContext(),
                         "R.string.ConnectionEstablishedMsg", Toast.LENGTH_LONG)
                         .show();
+
+                MainActivity.setWatchConnectionState(true);
             } else {
                 AppLog.e(TAG, "SASocket object is null");
             }
